@@ -1,0 +1,68 @@
+.sheet-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  padding: 8px;
+}
+
+.sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  background: var(--scrim);
+  animation: fade-in 140ms ease-out;
+}
+
+.sheet {
+  position: relative;
+  width: 100%;
+  padding: 16px 16px 12px;
+  border-radius: 14px;
+  background: var(--sheet);
+  box-shadow:
+    0 10px 30px rgb(0 0 0 / 0.18),
+    inset 0 0 0 0.5px var(--line);
+  animation: rise 200ms cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+
+.sheet h2 {
+  margin: 0 0 6px;
+  font-size: 13.5px;
+  font-weight: 650;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+
+.sheet p {
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--text-2);
+}
+
+.sheet .sheet-note {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.sheet-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}

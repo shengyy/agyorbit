@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="3.52 6.80 30.64 21.89">
+  <!-- Menu bar template: Antigravity (planet) with accounts in orbit; the
+       filled satellite is the active account. Black + alpha only. -->
+  <defs>
+    <mask id="planetGap">
+      <rect x="0" y="0" width="36" height="36" fill="#fff"/>
+      <path d="M31.8 18 A13.8 2.7 0 0 1 4.199999999999999 18" transform="rotate(-22 18 18)" fill="none" stroke="#000" stroke-width="4.20"/>
+    </mask>
+    <mask id="ringGap">
+      <rect x="0" y="0" width="36" height="36" fill="#fff"/>
+      <circle cx="31.39" cy="18.65" r="3.95" transform="rotate(-22 18 18)" fill="#000"/>
+    </mask>
+  </defs>
+  <circle cx="18" cy="18" r="6.6" fill="#000" mask="url(#planetGap)"/>
+  <ellipse cx="18" cy="18" rx="13.8" ry="2.7" transform="rotate(-22 18 18)" fill="none" stroke="#000" stroke-width="2.1" mask="url(#ringGap)"/>
+  <circle cx="31.39" cy="18.65" r="2.9" transform="rotate(-22 18 18)" fill="#000"/>
+</svg>

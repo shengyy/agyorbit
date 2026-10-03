@@ -1,0 +1,67 @@
+.quota-row {
+  display: grid;
+  grid-template-columns: 46px 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.quota-group {
+  font-size: 11.5px;
+  font-weight: 550;
+  color: var(--text-2);
+}
+
+.meter {
+  display: grid;
+  grid-template-columns: auto 1fr 30px;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  --meter-color: var(--meter-ok);
+}
+
+.meter-low {
+  --meter-color: var(--meter-low);
+}
+
+.meter-critical {
+  --meter-color: var(--meter-critical);
+}
+
+.meter-label {
+  font-size: 10.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.meter-track {
+  position: relative;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--fill-2);
+  overflow: hidden;
+}
+
+.meter-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--meter-color);
+  transition: width 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.meter-value {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text);
+}
+
+.meter-critical .meter-value {
+  color: var(--meter-critical);
+  font-weight: 600;
+}
+
+.meter-empty .meter-value {
+  color: var(--text-3);
+}

@@ -1,0 +1,33 @@
+.plan-badge {
+  flex: none;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 14px;
+  color: var(--text-2);
+  background: var(--fill-2);
+}
+
+.plan-pro {
+  color: #6d4aff;
+  background: rgb(109 74 255 / 0.12);
+}
+
+.plan-ultra {
+  color: #c27803;
+  background: rgb(245 165 36 / 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  .plan-pro {
+    color: #b3a1ff;
+    background: rgb(150 125 255 / 0.18);
+  }
+
+  .plan-ultra {
+    color: #ffc35c;
+    background: rgb(245 165 36 / 0.18);
+  }
+}

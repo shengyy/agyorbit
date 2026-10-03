@@ -1,0 +1,17 @@
+.avatar {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 0.5px var(--line);
+}
+
+.avatar-initials {
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(140deg, hsl(var(--hue) 70% 62%), hsl(calc(var(--hue) + 28) 64% 48%));
+}

@@ -1,0 +1,41 @@
+// Derived quota facts used by several components.
+
+import type { Account, QuotaGroup, QuotaWindow } from "./types";
+
+export type Severity = "ok" | "low" | "critical";
+
+export function severity(remaining: number): Severity {
+  if (remaining < 0.1) return "critical";
+  if (remaining < 0.35) return "low";
+  return "ok";
+}
+
+/** What is usable right now: the tighter of the 5-hour and weekly windows. */
+export function available(group: QuotaGroup): number | null {
+  const windows = [group.fiveHour, group.weekly].filter((w): w is QuotaWindow => w !== null);
+  return windows.length ? Math.min(...windows.map((w) => w.remaining)) : null;
+}
+
+/** Claude (where Opus lives) decides, Gemini breaks ties. */
+function score(account: Account): number | null {
+  if (account.quota.status !== "ready") return null;
+  const groups = account.quota.groups;
+  const claude = groups.find((g) => g.key === "claude");
+  const gemini = groups.find((g) => g.key === "gemini");
+  const primary = (claude && available(claude)) ?? (gemini && available(gemini));
+  if (primary === null || primary === undefined) return null;
+  return primary + ((gemini && available(gemini)) ?? 0) / 1000;
+}
+
+/** The other account worth switching to, if it clearly beats the current one. */
+export function bestAccountId(accounts: Account[], activeId: string | null): string | null {
+  const active = accounts.find((a) => a.id === activeId);
+  const activeScore = active ? (score(active) ?? 0) : 0;
+  let best: { id: string; score: number } | null = null;
+  for (const account of accounts) {
+    if (account.id === activeId) continue;
+    const s = score(account);
+    if (s !== null && s > 0 && (best === null || s > best.score)) best = { id: account.id, score: s };
+  }
+  return best && best.score > activeScore + 0.05 ? best.id : null;
+}

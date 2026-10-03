@@ -1,0 +1,59 @@
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 10px 10px 14px;
+}
+
+.brand-mark {
+  flex: none;
+  color: var(--text);
+}
+
+.brand {
+  flex: 1;
+  min-width: 0;
+}
+
+.brand-name {
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 16px;
+}
+
+.brand-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--text-2);
+}
+
+.status-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-3);
+}
+
+.status-running {
+  background: var(--meter-ok-strong);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--meter-ok-strong) 22%, transparent);
+}
+
+.status-missing {
+  background: var(--meter-critical);
+}
+
+.spinning svg {
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

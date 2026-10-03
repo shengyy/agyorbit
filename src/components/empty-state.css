@@ -1,0 +1,26 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 20px 22px;
+  text-align: center;
+}
+
+.empty-mark {
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.empty h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.empty p {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--text-2);
+}

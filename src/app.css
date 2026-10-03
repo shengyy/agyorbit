@@ -1,0 +1,31 @@
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+}
+
+/* macOS: the window grows with the content, up to a menu-sized height. */
+.platform-macos {
+  max-height: 680px;
+}
+
+.platform-macos:has(.sheet-layer) {
+  min-height: 300px;
+}
+
+/* Windows: a normal window the panel fills. */
+.platform-windows {
+  height: 100vh;
+}
+
+.account-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: 2px 10px 10px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}

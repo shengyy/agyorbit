@@ -1,0 +1,79 @@
+/* Design tokens. Light is the default; dark follows the system. */
+
+:root {
+  color-scheme: light dark;
+  --font:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui,
+    "PingFang SC", "Microsoft YaHei UI", sans-serif;
+
+  --text: rgb(0 0 0 / 0.86);
+  --text-2: rgb(0 0 0 / 0.56);
+  --text-3: rgb(0 0 0 / 0.38);
+  --fill-1: rgb(0 0 0 / 0.035);
+  --fill-2: rgb(0 0 0 / 0.07);
+  --fill-3: rgb(0 0 0 / 0.11);
+  --line: rgb(0 0 0 / 0.09);
+
+  --accent: #0a84ff;
+  --accent-text: #0066d6;
+  --accent-fill: rgb(10 132 255 / 0.12);
+  --accent-line: rgb(10 132 255 / 0.45);
+  --good-text: #1a7f4b;
+  --good-fill: rgb(48 164 108 / 0.14);
+
+  --meter-ok: #4c8dff;
+  --meter-ok-strong: #30a46c;
+  --meter-low: #f5a524;
+  --meter-critical: #ff453a;
+
+  --surface: transparent;
+  --card: rgb(255 255 255 / 0.55);
+  --card-hover: rgb(255 255 255 / 0.78);
+  --card-active: rgb(255 255 255 / 0.85);
+  --sheet: rgb(252 252 253 / 0.97);
+  --scrim: rgb(0 0 0 / 0.12);
+  --radius-card: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: rgb(255 255 255 / 0.9);
+    --text-2: rgb(255 255 255 / 0.58);
+    --text-3: rgb(255 255 255 / 0.38);
+    --fill-1: rgb(255 255 255 / 0.04);
+    --fill-2: rgb(255 255 255 / 0.08);
+    --fill-3: rgb(255 255 255 / 0.13);
+    --line: rgb(255 255 255 / 0.1);
+
+    --accent-text: #5aa9ff;
+    --accent-fill: rgb(10 132 255 / 0.2);
+    --accent-line: rgb(90 169 255 / 0.5);
+    --good-text: #5fd39a;
+    --good-fill: rgb(48 164 108 / 0.2);
+
+    --meter-ok: #5b9bff;
+
+    --card: rgb(255 255 255 / 0.06);
+    --card-hover: rgb(255 255 255 / 0.1);
+    --card-active: rgb(90 150 255 / 0.12);
+    --sheet: rgb(40 40 44 / 0.97);
+    --scrim: rgb(0 0 0 / 0.3);
+  }
+}
+
+/* Windows has no glass: use a solid surface with opaque cards. */
+.platform-windows {
+  --surface: #f3f3f4;
+  --card: #ffffff;
+  --card-hover: #fafafa;
+  --card-active: #f2f7ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .platform-windows {
+    --surface: #1f1f22;
+    --card: #2a2a2e;
+    --card-hover: #303035;
+    --card-active: #26324a;
+  }
+}

@@ -1,0 +1,48 @@
+[package]
+name = "agyorbit"
+version = "0.1.0"
+description = "Menu bar / tray account switcher for Google Antigravity"
+authors = ["AgyOrbit contributors"]
+license = "MIT"
+repository = "https://github.com/shengyy/agyorbit"
+edition = "2024"
+rust-version = "1.99"
+
+[lib]
+name = "agyorbit_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7", features = [] }
+
+[dependencies]
+tauri = { version = "2.12", features = ["tray-icon", "image-png", "macos-private-api"] }
+tauri-plugin-positioner = { version = "2.4", features = ["tray-icon"] }
+tauri-plugin-opener = "2.7"
+tauri-plugin-autostart = "2.7"
+tauri-plugin-single-instance = "2.5"
+tauri-plugin-log = "2.10"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["net", "io-util", "time", "sync", "macros", "rt-multi-thread", "process"] }
+reqwest = { version = "0.13", default-features = false, features = ["json", "form", "native-tls", "http2", "charset", "system-proxy"] }
+base64 = "0.23"
+sha2 = "0.11"
+getrandom = "0.4"
+url = "2.5"
+thiserror = "2"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde", "std"] }
+sysinfo = { version = "0.39", default-features = false, features = ["system"] }
+memchr = "2"
+sys-locale = "0.3"
+log = "0.4"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_Security_Credentials", "Win32_System_Threading"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true
