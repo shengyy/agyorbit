@@ -1,0 +1,5 @@
+# One line ending everywhere, so Windows checkouts pass the same format checks.
+* text=auto eol=lf
+*.png binary
+*.icns binary
+*.ico binary
