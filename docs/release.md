@@ -7,7 +7,8 @@ Releases follow [SemVer](https://semver.org).
 
 ## Steps
 
-1. In a normal PR, move `CHANGELOG.md`'s `[Unreleased]` entries under `## [X.Y.Z] - YYYY-MM-DD`, set
+1. In a normal PR, make sure [status.md](status.md) matches what this version was verified on, move
+   `CHANGELOG.md`'s `[Unreleased]` entries under `## [X.Y.Z] - YYYY-MM-DD`, set
    `version` in `src-tauri/Cargo.toml` and run `cargo check` in `src-tauri` to update `Cargo.lock`.
    Merge it.
 2. Actions → **Release** → **Run workflow** on `main`, and enter `X.Y.Z`. The `authorize` job refuses to

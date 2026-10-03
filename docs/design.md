@@ -14,28 +14,27 @@ confirmed click to switch.
 - Open at Login registers AgyOrbit itself as a login item on macOS (SMAppService), so System Settings
   shows it by name and icon; on Windows it starts hidden in the tray.
 
-## Interaction rules
+## Interaction
 
-- Anything that closes Antigravity asks first, in a sheet inside the surface, and names what will close
-  (app, language server, helpers, `agy` CLI). Enter confirms, Escape cancels.
+What happens and when is defined in [PRODUCT.md](../PRODUCT.md); this is how it is presented.
+
+- Confirmations are sheets that slide up inside the surface, never separate windows. Enter confirms,
+  Escape cancels, and a confirmation names what it will close.
 - Long operations show their real progress (switch steps come from the backend) and cannot be dismissed
   half-way. Success lingers 1.6 s; errors stay until acknowledged.
-- Adding an account happens in the browser. The surface shows a cancellable waiting sheet and comes back
-  when Google redirects.
+- While an account signs in, the surface shows a cancellable waiting sheet and comes back when Google
+  redirects.
 - Account actions (sign in again, copy email, remove) live in a native context menu: right-click a card
-  or use its `⋯` button.
-- Quotas refresh in the background every 5 minutes and when the surface opens if older than a minute.
+  or use its `⋯` button. App actions live in the header's `⋯` menu.
 
 ## Account card
 
-- The account in use is pinned first; the others keep the order they were added in.
 - Avatar (Google photo, else initials), name, plan badge (`PRO` / `ULTRA` / `FREE`), email.
-- `Current` marks the account Antigravity is signed in with; `Most left` marks the other account worth
-  switching to (Claude availability decides, Gemini breaks ties, and only when it clearly beats the
-  current one).
-- One row per model group (Gemini, Claude) with the 5-hour and weekly windows side by side. The number
-  is the share **remaining**. Colour changes only when it matters: amber below 35 %, red below 10 %.
+- Tags: `Current` for the account in use, `Most left` for the account worth switching to.
+- One row per quota group (Gemini, Claude) with the 5-hour and weekly windows side by side, each a meter
+  and the share remaining. Colour changes only when it matters: amber below 35 %, red below 10 %.
 - When a window is low, a footnote says when it recovers; hovering any meter shows its reset time.
+- The Switch button appears on hover and floats over the tags, so it never squeezes the name.
 
 ## Visual tokens
 

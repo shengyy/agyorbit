@@ -53,7 +53,7 @@ quota left. AgyOrbit lives in the menu bar (macOS) or the notification area (Win
 | Platform | Status |
 |---|---|
 | macOS 26 or later (Apple silicon and Intel) | Supported |
-| Windows 10 / 11 x64 | Experimental: builds in CI, not yet verified on a real installation |
+| Windows 10 / 11 x64 | Experimental: builds in CI, not yet verified on a real installation ([status](docs/status.md)) |
 
 Antigravity must be installed. AgyOrbit reads its sign-in configuration from the local installation.
 
@@ -93,9 +93,10 @@ on: [docs/antigravity-integration.md](docs/antigravity-integration.md).
 
 ## Privacy and fair use
 
-AgyOrbit only switches which of **your own** accounts the official Antigravity app uses. It does not proxy
-model traffic, share accounts or work around quotas, and it talks to nothing but Google. Please use it
-within Google's terms. See [SECURITY.md](SECURITY.md) for exactly what is stored and sent.
+AgyOrbit only switches which of **your own** accounts the official Antigravity app uses. It talks to
+nothing but Google and has no server or telemetry. What it will never do, such as proxying model traffic
+or rotating accounts to get around limits, is listed under [non-goals](PRODUCT.md#non-goals); what it
+stores and sends is in [SECURITY.md](SECURITY.md). Please use it within Google's terms.
 
 AgyOrbit is an independent project and is not affiliated with or endorsed by Google. "Antigravity" and
 "Gemini" are trademarks of Google LLC.
@@ -103,7 +104,8 @@ AgyOrbit is an independent project and is not affiliated with or endorsed by Goo
 ## Contributing
 
 Issues and pull requests are welcome; Windows verification is the most useful help right now. Start with
-[CONTRIBUTING.md](CONTRIBUTING.md) and [docs/](docs/README.md).
+[CONTRIBUTING.md](CONTRIBUTING.md), the product rules in [PRODUCT.md](PRODUCT.md) and the
+[docs](docs/README.md).
 
 ## License
 
