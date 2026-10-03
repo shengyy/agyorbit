@@ -1,19 +1,23 @@
 # Security
 
-AgyOrbit handles Google OAuth tokens for your own accounts. This page states what it stores, where, and
-what it sends.
+AgyOrbit handles Google OAuth tokens for your own accounts. This page owns the data inventory, storage
+locations, network sends and vulnerability reporting; implementation mechanisms live in
+[docs/architecture.md](docs/architecture.md).
 
 ## What is stored
 
 | Data | Location |
 |---|---|
 | Refresh token per account | macOS Keychain / Windows Credential Manager, service `agyorbit`, keyed by the Google account id |
-| Account email, name, photo URL, plan | `accounts.json` in the app data directory (no secrets) |
-| Access tokens | Memory only |
-| Antigravity's own credential | Left where Antigravity keeps it; rewritten only when you confirm a switch |
+| Account id, email, name, photo URL, plan, added time and last-seen sign-in fingerprint | `accounts.json` in the app data directory (no secrets) |
+| AgyOrbit's per-account access-token cache | Memory only |
+| Antigravity's own credential | Left in its [keyring and fallback file](docs/antigravity-integration.md#signed-in-credential); rewritten only when you confirm a switch |
+| Logs | The app log directory; never containing tokens |
 
-On macOS every keychain item is written through `/usr/bin/security`, exactly as Antigravity's own
-go-keyring does.
+The app data directory is `~/Library/Application Support/io.github.shengyy.agyorbit/` on macOS and
+`%APPDATA%\io.github.shengyy.agyorbit\` on Windows. The app log directory on macOS is
+`~/Library/Logs/io.github.shengyy.agyorbit/`. Keychain access is described in
+[Credential access](docs/architecture.md#credential-access).
 
 ## What is sent, and to whom
 

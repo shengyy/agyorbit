@@ -1,6 +1,8 @@
 # Status
 
-What is true about AgyOrbit right now. The version itself lives in `src-tauri/Cargo.toml`, published
+This page owns platform support and the scope of feature verification. Antigravity's external
+contracts and their verified versions live in [antigravity-integration.md](antigravity-integration.md).
+The version itself lives in `src-tauri/Cargo.toml`, published
 builds on [Releases](https://github.com/shengyy/agyorbit/releases), and the change history in
 [CHANGELOG.md](../CHANGELOG.md). Update this page in the same PR as anything that changes what has been
 verified.
