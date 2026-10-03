@@ -62,10 +62,14 @@ requests only.
 - UI changes: attach light and dark screenshots. `bun scripts/screenshot/render.ts` renders the real UI
   with fictional accounts; never post screenshots of real ones.
 
-## Good first areas
+## Issues
 
-- Windows verification on a real installation (credential layout, process names, install path).
-- Signed and notarized release builds.
-- More languages in `src/i18n.ts`.
+Issues are the only to-do list; documents link to them instead of keeping their own.
+
+- `bug`, `enhancement`: reports and requests. Check them against [PRODUCT.md](PRODUCT.md) first,
+  especially its non-goals.
+- `deferred`: known and accepted for now. The issue says why it waits and what would bring it back.
+- `needs-decision`: waiting on a maintainer or user decision.
+- `help wanted`, `good first issue`: good places to start.
 
 Releases are cut by maintainers; see [`docs/release.md`](docs/release.md).

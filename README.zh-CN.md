@@ -49,7 +49,7 @@
 | 平台 | 状态 |
 |---|---|
 | macOS 26 及以上（Apple 芯片与 Intel） | 支持 |
-| Windows 10 / 11 x64 | 实验性：CI 可构建，尚未在真实安装上验证 |
+| Windows 10 / 11 x64 | 实验性：CI 可构建，尚未在真实安装上验证（[状态](docs/status.md)） |
 
 需要已安装 Antigravity：AgyOrbit 从本机安装中读取登录配置。
 
@@ -85,14 +85,15 @@ Antigravity 把登录凭据存在系统钥匙串（另有一份回退文件）�
 
 ## 隐私与合理使用
 
-AgyOrbit 只负责切换官方 Antigravity 应用使用的是 **你自己的** 哪个账号：不代理模型流量、不共享账号、不绕过额度，
-除 Google 外不与任何服务通信。请在 Google 条款范围内使用。存储与发送的具体内容见 [SECURITY.md](SECURITY.md)。
+AgyOrbit 只负责切换官方 Antigravity 应用使用的是 **你自己的** 哪个账号，除 Google 外不与任何服务通信，没有服务器和统计上报。
+它永远不做的事（例如代理模型流量、为绕过额度自动轮换账号）列在[非目标](PRODUCT.md#non-goals)；存储与发送的具体内容见
+[SECURITY.md](SECURITY.md)。请在 Google 条款范围内使用。
 
 AgyOrbit 是独立项目，与 Google 无隶属或背书关系。"Antigravity" 与 "Gemini" 是 Google LLC 的商标。
 
 ## 参与贡献
 
-欢迎 issue 和 PR，目前最需要的是 Windows 上的实机验证。先读 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [docs/](docs/README.md)。
+欢迎 issue 和 PR，目前最需要的是 Windows 上的实机验证。先读 [CONTRIBUTING.md](CONTRIBUTING.md)、产品规则 [PRODUCT.md](PRODUCT.md) 和[文档](docs/README.md)。
 
 ## 许可证
 

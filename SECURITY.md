@@ -22,13 +22,13 @@ Only Google endpoints: `accounts.google.com` and `oauth2.googleapis.com` (sign-i
 (quota and plan). There is no AgyOrbit server, analytics or telemetry. Requests identify themselves as
 `AgyOrbit/<version> (antigravity)`.
 
-## What AgyOrbit never does
+## What AgyOrbit never does with secrets
 
 - Put tokens, client secrets or account emails in logs, files in this repository, or error messages.
 - Redistribute Antigravity's OAuth client secret: it is read at runtime from your local Antigravity
   installation.
-- Proxy model traffic or expose your accounts as an API. AgyOrbit only switches which of your own
-  accounts the official Antigravity app uses.
+
+Product-level limits, such as never proxying model traffic, are the [non-goals](PRODUCT.md#non-goals).
 
 ## Reporting a vulnerability
 
