@@ -11,7 +11,8 @@
 | 改代码、找模块 | [`docs/architecture.md`](docs/architecture.md) |
 | 涉及 Antigravity 的存储、OAuth、接口、进程 | [`docs/antigravity-integration.md`](docs/antigravity-integration.md) |
 | 改界面或交互 | [`docs/design.md`](docs/design.md) |
-| 发版、打包 | [`docs/release.md`](docs/release.md) |
+| 发版、打包、官网 `site/` | [`docs/release.md`](docs/release.md) |
+| README / 官网截图 | [`docs/design.md`](docs/design.md) 的 Screenshots 一节 |
 
 ## 硬约束
 

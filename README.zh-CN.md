@@ -19,6 +19,15 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
 </p>
 
+<p align="center"><a href="https://shengyy.github.io/agyorbit/"><strong>官网</strong></a> · <a href="https://github.com/shengyy/agyorbit/releases/latest"><strong>下载</strong></a></p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/hero-dark.png">
+    <img src="assets/screenshots/hero-light.png" width="520" alt="AgyOrbit 菜单栏弹出面板，列出三个账号及各自的 Gemini 和 Claude 额度">
+  </picture>
+</p>
+
 ---
 
 在 [Antigravity](https://antigravity.google) 里用多个 Google 账号时，每次切换都要退出、重新登录、再等待，
@@ -59,6 +68,13 @@
 2. 点 **添加账号**，浏览器会打开 Google 登录页，选择另一个账号并允许访问。
 3. 点击某个账号（或它的 **切换** 按钮）并确认，Antigravity 会以该账号重新启动。
 4. 右键账号可重新授权、复制邮箱或移除；顶部 `⋯` 菜单里有开机启动、日志和退出。
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/flow-dark.png">
+    <img src="assets/screenshots/flow-light.png" width="860" alt="切换前的确认框，以及切换进度">
+  </picture>
+</p>
 
 ## 工作原理
 

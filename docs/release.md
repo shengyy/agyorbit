@@ -33,3 +33,16 @@ bun tauri build --target universal-apple-darwin   # needs both Apple targets: ru
 ```
 
 Artifacts land in `src-tauri/target/<target>/release/bundle/`.
+
+## Website
+
+`site/` is the landing page at <https://shengyy.github.io/agyorbit/>. The `pages` workflow deploys it on
+every push to `main` that touches `site/` or `assets/`, copying `assets/brand` and `assets/screenshots`
+next to it. The download buttons ask GitHub's API for the latest release and pick its `.dmg` and
+`-setup.exe`, so a new release needs no site change. Preview locally:
+
+```bash
+mkdir -p /tmp/agyorbit-site/assets && cp -R site/. /tmp/agyorbit-site/ \
+  && cp -R assets/brand assets/screenshots /tmp/agyorbit-site/assets/ \
+  && python3 -m http.server 8000 --directory /tmp/agyorbit-site
+```

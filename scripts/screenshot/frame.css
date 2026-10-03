@@ -1,0 +1,98 @@
+/* Stages the popover under a menu bar on a wallpaper, like it appears on macOS. */
+
+/* Keep the canvas transparent; the UI's own tokens still follow the emulated scheme. */
+:root {
+  color-scheme: only light;
+}
+
+body {
+  width: max-content;
+  padding: 28px 28px 40px;
+}
+
+.stage {
+  position: relative;
+  width: 520px;
+  padding-bottom: 36px;
+  border-radius: 22px;
+  overflow: hidden;
+  background:
+    radial-gradient(55% 60% at 12% 18%, #9db8ff 0%, transparent 62%),
+    radial-gradient(50% 55% at 92% 88%, #ffc2a1 0%, transparent 62%),
+    radial-gradient(45% 50% at 85% 20%, #c9b5ff 0%, transparent 60%),
+    linear-gradient(160deg, #dfe7ff, #f4e9ff);
+  box-shadow: 0 18px 50px rgb(16 24 64 / 0.22);
+}
+
+.menubar {
+  position: relative;
+  height: 30px;
+  background: rgb(255 255 255 / 0.4);
+  backdrop-filter: blur(24px) saturate(1.5);
+  color: rgb(0 0 0 / 0.85);
+  font:
+    500 13px / 30px -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+}
+
+.menubar .tray {
+  position: absolute;
+  top: 3px;
+  left: 306px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgb(0 0 0 / 0.1);
+}
+
+.menubar .tray svg {
+  height: 18px;
+  width: auto;
+}
+
+.menubar .clock {
+  position: absolute;
+  right: 16px;
+}
+
+#root {
+  width: 360px;
+  margin: 8px 0 0 144px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgb(248 248 250 / 0.7);
+  backdrop-filter: blur(40px) saturate(1.8);
+  box-shadow:
+    0 20px 50px rgb(16 24 64 / 0.25),
+    inset 0 0 0 0.5px rgb(255 255 255 / 0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+  .stage {
+    background:
+      radial-gradient(55% 60% at 12% 18%, #3a4fb5 0%, transparent 62%),
+      radial-gradient(50% 55% at 92% 88%, #8a3f6e 0%, transparent 62%),
+      radial-gradient(45% 50% at 85% 20%, #4b2f8f 0%, transparent 60%),
+      linear-gradient(160deg, #141a3a, #1d1236);
+    box-shadow: 0 18px 50px rgb(0 0 0 / 0.45);
+  }
+
+  .menubar {
+    background: rgb(0 0 0 / 0.25);
+    color: rgb(255 255 255 / 0.9);
+  }
+
+  .menubar .tray {
+    background: rgb(255 255 255 / 0.18);
+  }
+
+  #root {
+    background: rgb(36 36 42 / 0.72);
+    box-shadow:
+      0 20px 50px rgb(0 0 0 / 0.5),
+      inset 0 0 0 0.5px rgb(255 255 255 / 0.14);
+  }
+}

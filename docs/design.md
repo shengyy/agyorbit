@@ -55,3 +55,16 @@ bun tauri icon /tmp/agyorbit-icon.png -o src-tauri/icons
 rm -rf src-tauri/icons/android src-tauri/icons/ios src-tauri/icons/Square*Logo.png src-tauri/icons/StoreLogo.png src-tauri/icons/64x64.png
 rsvg-convert -h 36 assets/brand/tray-template.svg -o src-tauri/icons/tray-template.png
 ```
+
+## Screenshots
+
+README and website screenshots are rendered from the real UI with fictional accounts, so they never
+show anyone's email, and always match the current design:
+
+```bash
+bun scripts/screenshot/render.ts   # needs Google Chrome and ImageMagick
+```
+
+It builds the frontend, replaces Tauri's IPC with `scripts/screenshot/mock-tauri.js` (demo data and
+scenes), stages the popover under a menu bar with `frame.css`, and writes
+`assets/screenshots/{hero,flow}-{light,dark}.png`. Never commit screenshots of real accounts.

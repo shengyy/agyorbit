@@ -19,6 +19,15 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
 </p>
 
+<p align="center"><a href="https://shengyy.github.io/agyorbit/"><strong>Website</strong></a> · <a href="https://github.com/shengyy/agyorbit/releases/latest"><strong>Download</strong></a></p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/hero-dark.png">
+    <img src="assets/screenshots/hero-light.png" width="520" alt="The AgyOrbit popover under the menu bar, listing three accounts with their Gemini and Claude quotas">
+  </picture>
+</p>
+
 ---
 
 If you use more than one Google account with [Antigravity](https://antigravity.google), switching means
@@ -66,6 +75,13 @@ To build from source, see [CONTRIBUTING.md](CONTRIBUTING.md).
 3. Click an account (or its **Switch** button) and confirm. Antigravity restarts on that account.
 4. Right-click an account to sign in again, copy its email or remove it. The `⋯` menu at the top has
    *Open at Login*, logs and Quit.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/flow-dark.png">
+    <img src="assets/screenshots/flow-light.png" width="860" alt="Confirming a switch, then the switch progress">
+  </picture>
+</p>
 
 ## How it works
 

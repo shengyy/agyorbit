@@ -19,6 +19,7 @@ All notable changes to AgyOrbit are documented here. The format follows
   keychain and its fallback file, verifies it, relaunches, and restores the previous sign-in on failure.
 - Restart and quit Antigravity, open at login, logs.
 - English and Simplified Chinese UI.
+- Website at https://shengyy.github.io/agyorbit/ with download links to the latest release.
 
 ### Verified
 

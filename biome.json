@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "files": { "includes": ["src/**", "*.json", "*.ts"] },
+  "files": { "includes": ["src/**", "scripts/**", "site/**/*.js", "site/**/*.css", "*.json", "*.ts"] },
   "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 110 },
   "linter": { "enabled": true, "rules": { "recommended": true } },
   "assist": { "actions": { "source": { "organizeImports": "on" } } }

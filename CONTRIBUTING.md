@@ -51,7 +51,8 @@ example on Windows or a new Antigravity version), update the table in
 - Update both `README.md` and `README.zh-CN.md` when either changes.
 - Never paste tokens, emails or log lines that contain them. Logs are designed not to include tokens;
   if you find one that does, that is a bug.
-- UI changes: attach a screenshot (light and dark if colours changed) using demo or blurred accounts.
+- UI changes: attach light and dark screenshots. `bun scripts/screenshot/render.ts` renders the real UI
+  with fictional accounts; never post screenshots of real ones.
 
 ## Good first areas
 

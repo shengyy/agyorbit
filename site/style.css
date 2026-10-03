@@ -1,0 +1,363 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f6f7fc;
+  --surface: #ffffff;
+  --text: #0c1024;
+  --muted: #5a6280;
+  --line: rgb(12 16 36 / 0.09);
+  --accent: #3b63f5;
+  --accent-ink: #ffffff;
+  --glow-a: rgb(91 140 255 / 0.28);
+  --glow-b: rgb(255 174 53 / 0.18);
+  --code: rgb(12 16 36 / 0.05);
+  --radius: 18px;
+  --font:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", system-ui,
+    sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #070a1c;
+    --surface: rgb(255 255 255 / 0.04);
+    --text: #e9ecff;
+    --muted: #98a0c2;
+    --line: rgb(233 236 255 / 0.1);
+    --accent: #5b82ff;
+    --glow-a: rgb(70 100 255 / 0.32);
+    --glow-b: rgb(255 140 60 / 0.16);
+    --code: rgb(255 255 255 / 0.07);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(50rem 32rem at 8% -6rem, var(--glow-a), transparent 70%),
+    radial-gradient(44rem 30rem at 100% 26rem, var(--glow-b), transparent 70%), var(--bg);
+  color: var(--text);
+  font: 16px / 1.6 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.nav,
+main,
+footer {
+  width: min(1100px, 100% - 32px);
+  margin-inline: auto;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 650;
+  font-size: 17px;
+  text-decoration: none;
+}
+
+.nav nav {
+  display: flex;
+  gap: 22px;
+  font-size: 14.5px;
+}
+
+.nav nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav nav a:hover,
+.nav .github {
+  color: var(--text);
+}
+
+footer {
+  padding: 40px 0 56px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+footer p {
+  margin: 0;
+}
+
+footer .fine {
+  margin-top: 8px;
+  font-size: 12.5px;
+}
+
+section {
+  padding: 72px 0;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+h2 {
+  margin: 0 0 14px;
+  font-size: clamp(28px, 4vw, 40px);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 40px;
+  padding-top: 40px;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin: 0 0 18px;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(42px, 6.4vw, 72px);
+  letter-spacing: -0.035em;
+}
+
+.lede {
+  max-width: 34rem;
+  margin: 22px 0 30px;
+  font-size: 19px;
+  color: var(--muted);
+}
+
+.downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-weight: 620;
+  text-decoration: none;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgb(20 30 80 / 0.12);
+}
+
+.button.primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.button small {
+  margin-left: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.meta {
+  margin: 18px 0 0;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.hero-shot img {
+  display: block;
+  margin-inline: auto;
+}
+
+.features .grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 34px;
+}
+
+.features article {
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.features svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.features h3 {
+  margin: 14px 0 6px;
+  font-size: 18px;
+}
+
+.features p,
+.section-lede,
+.install p,
+.faq p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.section-lede {
+  max-width: 44rem;
+  font-size: 17.5px;
+}
+
+.flow picture {
+  display: block;
+  margin-top: 30px;
+}
+
+.flow img {
+  display: block;
+  margin-inline: auto;
+}
+
+.install ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.install li {
+  position: relative;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  counter-increment: step;
+}
+
+.install li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.install h3 {
+  margin: 14px 0 6px;
+  font-size: 18px;
+}
+
+.install p + p,
+.install pre + p {
+  margin-top: 10px;
+}
+
+pre {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--code);
+  overflow-x: auto;
+  font-size: 12.5px;
+}
+
+.faq {
+  max-width: 760px;
+}
+
+.faq details {
+  border-bottom: 1px solid var(--line);
+  padding: 18px 0;
+}
+
+.faq summary {
+  cursor: pointer;
+  font-weight: 620;
+  font-size: 17px;
+}
+
+.faq details p {
+  margin-top: 10px;
+}
+
+@media (max-width: 860px) {
+  .hero,
+  .features .grid,
+  .install ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .nav nav a:not(.github) {
+    display: none;
+  }
+
+  section {
+    padding: 52px 0;
+  }
+}

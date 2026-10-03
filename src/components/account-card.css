@@ -25,6 +25,7 @@
 }
 
 .card-head {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -70,7 +71,11 @@
 }
 
 .switch-btn {
-  flex: none;
+  /* Floats over the tags so the hidden button never squeezes the name. */
+  position: absolute;
+  top: 50%;
+  right: 32px;
+  transform: translateY(-50%);
   height: 22px;
   padding: 0 10px;
   border-radius: 999px;
@@ -79,12 +84,14 @@
   color: #fff;
   background: var(--accent);
   opacity: 0;
+  pointer-events: none;
   transition: opacity 120ms ease;
 }
 
 .card:hover .switch-btn,
 .card:focus-within .switch-btn {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .card-more {
