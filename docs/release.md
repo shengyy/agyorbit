@@ -7,11 +7,16 @@ Releases follow [SemVer](https://semver.org).
 
 ## Steps
 
-1. Move `CHANGELOG.md`'s `[Unreleased]` entries under `## [X.Y.Z] - YYYY-MM-DD`.
-2. Set `version` in `src-tauri/Cargo.toml`, run `cargo check` in `src-tauri` to update `Cargo.lock`.
-3. Commit, then tag and push: `git tag vX.Y.Z && git push origin main vX.Y.Z`.
-4. The `release` workflow builds a universal macOS `.dmg` and a Windows NSIS installer and attaches them
-   to a draft GitHub release. Review the notes and publish.
+1. In a normal PR, move `CHANGELOG.md`'s `[Unreleased]` entries under `## [X.Y.Z] - YYYY-MM-DD`, set
+   `version` in `src-tauri/Cargo.toml` and run `cargo check` in `src-tauri` to update `Cargo.lock`.
+   Merge it.
+2. Actions → **Release** → **Run workflow** on `main`, and enter `X.Y.Z`. The `authorize` job refuses to
+   run from another branch, for a version that differs from `Cargo.toml`, or for one already released.
+   The build then makes a universal macOS `.dmg` and a Windows NSIS installer from `main`'s current
+   commit and attaches them to a draft release `vX.Y.Z`. Nothing is pushed from a local machine.
+3. Check the draft: download the `.dmg`, confirm `codesign -dv` reports the identifier
+   `io.github.shengyy.agyorbit` and `lipo -archs` lists both architectures. Then publish it; publishing
+   creates the tag, and the website's download buttons follow the latest release automatically.
 
 ## Signing
 
