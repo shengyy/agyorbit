@@ -4,8 +4,6 @@
 //! menu for when the surface is not wanted.
 
 use tauri::AppHandle;
-#[cfg(not(target_os = "macos"))]
-use tauri::Manager;
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
 
