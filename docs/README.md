@@ -28,14 +28,30 @@ facts that every maintainer needs; history lives in Git, pull requests and [CHAN
 
 | Directory | Only holds |
 |---|---|
-| `src/` | The UI (React, TypeScript). It renders the backend's snapshot and calls commands; no tokens |
-| `src-tauri/` | The backend (Rust), Tauri configuration, capabilities and bundled icons |
-| `site/` | The website, deployed to GitHub Pages together with `assets/` |
+| `src/` | React UI: snapshot-derived presentation, dialog state and requests through Tauri commands / APIs / plugins; no tokens |
+| `src/components/` | UI components, shared icons and colocated component styles; sheets share `sheet.css` |
+| `src/hooks/` | Snapshot subscription, content-driven sizing and relative-time updates |
+| `src/styles/` | Shared design tokens and base UI styles |
+| `src-tauri/` | The Rust app and its Tauri build / bundle configuration |
+| `src-tauri/src/` | Backend modules; the module map is in [architecture.md](architecture.md) |
+| `src-tauri/src/antigravity/` | Adapters for the local Antigravity installation, credentials, OAuth client and processes |
+| `src-tauri/src/google/` | Google OAuth, its loopback callback and Cloud Code API clients |
+| `src-tauri/src/secret_store/` | Platform credential-store primitives |
+| `src-tauri/capabilities/` | Tauri permissions for the app surface |
+| `src-tauri/icons/` | Generated app and tray icons consumed by the Rust app and Tauri bundler |
+| `site/` | Website HTML, styles and download-link script; publishing is in [release.md](release.md#website) |
+| `assets/` | Public visual assets shared by the README and website |
 | `assets/brand/` | Icon sources (SVG) |
 | `assets/screenshots/` | Rendered screenshots for the README and website; regenerate, never hand-edit |
+| `scripts/` | Development tools for generating visual assets |
 | `scripts/screenshot/` | The screenshot renderer and its fictional demo data |
-| `docs/` | The documents above |
-| `.github/` | CI, release and Pages workflows; issue and pull request templates |
+| `docs/` | Current maintainer reference documents and this responsibility map |
+| `.github/` | GitHub automation and issue / pull request submission forms |
+| `.github/workflows/` | CI, release and Pages workflows |
+| `.github/ISSUE_TEMPLATE/` | Bug and feature forms, and issue-report routing |
+
+Root files are the conventional public documents, license, app HTML entry point and toolchain / build
+declarations. Code-module responsibilities are detailed in [architecture.md](architecture.md).
 
 A new directory needs one responsibility and a row here in the same change.
 

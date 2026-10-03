@@ -30,8 +30,9 @@ operations run in Rust; native menus, clipboard writes and URL opening use Tauri
 
 | Module | Owns |
 |---|---|
+| `main.rs` | Executable entry point that calls `lib.rs` |
 | `lib.rs` | Plugin wiring, startup, command registration |
-| `commands.rs` | The frontend's entry points; each delegates to one module |
+| `commands.rs` | App commands: delegates account and process behavior, handles app / shell actions |
 | `state.rs` | Shared state, snapshot emission, the single operation slot, token minting |
 | `model.rs` | Types sent to the frontend |
 | `accounts.rs` | Browser sign-in, removal, adopting a sign-in made inside Antigravity |
@@ -53,14 +54,15 @@ operations run in Rust; native menus, clipboard writes and URL opening use Tauri
 
 | Path | Owns |
 |---|---|
+| `main.tsx` | React mounting and shared stylesheet loading |
 | `types.ts` | Mirror of `model.rs` |
 | `ipc.ts` | Command and event names |
-| `app.tsx` | Composition and the dialog state machine |
-| `menus.ts` | Native context menus |
-| `quota.ts` | Derived facts: severity, usable share, best account to switch to |
+| `app.tsx` / `app.css` | Surface composition, dialog state, account ordering and panel layout |
+| `menus.ts` | Native context menus and their Tauri API / plugin actions |
+| `quota.ts` | Presentation derived from snapshot quotas: severity, usable share and recommended account |
 | `i18n.ts` / `format.ts` | Strings (English, Simplified Chinese) and time / percent formatting |
 | `hooks/` | Snapshot subscription, popover auto-size, relative-time ticker |
-| `components/` | One component per file, each with its own stylesheet |
+| `components/` | UI components, shared icons and colocated styles; sheets share `sheet.css` |
 | `styles/` | Design tokens and base styles |
 
 ## Antigravity adapters
