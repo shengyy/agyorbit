@@ -72,4 +72,5 @@ Issues are the only to-do list; documents link to them instead of keeping their 
 - `needs-decision`: waiting on a maintainer or user decision.
 - `help wanted`, `good first issue`: good places to start.
 
-Releases are cut by maintainers; see [`docs/release.md`](docs/release.md).
+Releases are cut by the maintainer (run end to end by their coding agent); see
+[`docs/release.md`](docs/release.md).
