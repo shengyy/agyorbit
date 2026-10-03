@@ -1,5 +1,9 @@
 # Release
 
+This page owns versioning, builds, releases, signing and website publishing. Contributor checks and PR
+workflow live in [CONTRIBUTING.md](../CONTRIBUTING.md); app and website visuals live in
+[design.md](design.md).
+
 ## Version
 
 `src-tauri/Cargo.toml` is the only version source; the bundles, the app menu and the User-Agent read it.
@@ -51,9 +55,7 @@ macOS bundles are ad-hoc signed during bundling (`bundle.macOS.signingIdentity: 
 build the code identifier `io.github.shengyy.agyorbit`. Keep it: macOS keys the SMAppService login item
 to the code identity, and the linker's default ad-hoc signature changes it on every build.
 
-- macOS: Gatekeeper blocks the first launch of a downloaded build. Open it once with right-click → Open,
-  or clear the quarantine flag: `xattr -dr com.apple.quarantine /Applications/AgyOrbit.app`.
-- Windows: SmartScreen warns on first run; choose "More info" → "Run anyway".
+First-launch instructions for Gatekeeper and SmartScreen live in the [README](../README.md#install).
 
 Adding signing later only needs secrets in the workflow (`APPLE_CERTIFICATE`, `APPLE_SIGNING_IDENTITY`,
 notarization credentials, or a Windows certificate) as described in Tauri's distribution guide.
@@ -66,16 +68,16 @@ bun tauri build                 # host platform
 bun tauri build --target universal-apple-darwin   # needs both Apple targets: rustup target add x86_64-apple-darwin
 ```
 
-Artifacts land in `src-tauri/target/<target>/release/bundle/`.
+Host-platform artifacts land in `src-tauri/target/release/bundle/`; builds with `--target` use
+`src-tauri/target/<target>/release/bundle/`.
 
 ## Website
 
 `site/` is the landing page at <https://shengyy.github.io/agyorbit/>. The `pages` workflow deploys it on
 every push to `main` that touches `site/` or `assets/`, copying `assets/brand` and `assets/screenshots`
 next to it. The download buttons ask GitHub's API for the latest release and pick its `.dmg` and
-`-setup.exe`, so a new release needs no site change. Sizes are in rem with a fluid root font size
-(16px up to ~1280px wide, 22px on large displays), so the whole page scales up instead of leaving wide
-margins; screenshots come in 2x and 3x through `srcset`. Preview locally:
+`-setup.exe`, so a new release needs no site change. The site's visual rules are in
+[design.md](design.md#website). Preview locally:
 
 ```bash
 mkdir -p /tmp/agyorbit-site/assets && cp -R site/. /tmp/agyorbit-site/ \

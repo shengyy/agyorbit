@@ -1,8 +1,11 @@
 # Architecture
 
-AgyOrbit is a [Tauri 2](https://tauri.app) app: a Rust backend that owns every side effect and a React
-frontend that only renders what the backend reports. External facts about Antigravity live in
-[antigravity-integration.md](antigravity-integration.md); this page covers how the code is organized.
+This page owns AgyOrbit's code map, data flow, switch sequence and persistence mechanisms. External
+contracts and verified versions live in [antigravity-integration.md](antigravity-integration.md); data
+inventory and storage locations live in [SECURITY.md](../SECURITY.md).
+
+AgyOrbit is a [Tauri 2](https://tauri.app) app: Rust executes side effects and React renders the backend
+snapshot, derives presentation data and requests operations through commands and Tauri plugins.
 
 ## Data flow
 
@@ -18,9 +21,10 @@ frontend that only renders what the backend reports. External facts about Antigr
           credential, processes, client)        Cloud Code quota)              (per-account state)
 ```
 
-The backend keeps one `Orbit` state (`state.rs`). Every mutation goes through `Orbit::update`, which
-emits a full `Snapshot` (`model.rs`) to the frontend. The frontend never holds tokens and never decides
-anything the backend can know: it renders the latest snapshot and calls commands.
+The backend keeps one `Orbit` state (`state.rs`). `Orbit::update` publishes state changes as a full
+`Snapshot` (`model.rs`). The frontend never holds tokens. It keeps dialog state and derives account
+ordering, quota severity and the recommendation from the snapshot. Account, credential and process
+operations run in Rust; native menus, clipboard writes and URL opening use Tauri's APIs and plugins.
 
 ## Backend modules (`src-tauri/src`)
 
@@ -59,6 +63,35 @@ anything the backend can know: it renders the latest snapshot and calls commands
 | `components/` | One component per file, each with its own stylesheet |
 | `styles/` | Design tokens and base styles |
 
+## Antigravity adapters
+
+### Credential access
+
+`antigravity/live.rs` reads the keyring first and writes both the keyring and fallback file, matching
+the [external storage contract](antigravity-integration.md#signed-in-credential).
+
+`secret_store/macos.rs` invokes `/usr/bin/security`, as Antigravity's go-keyring does, so each item's ACL
+stays bound to that system tool rather than AgyOrbit's per-build signature. This avoids keychain prompts
+for AgyOrbit and Antigravity.
+
+`antigravity/credential.rs` preserves unknown fields when decoding and re-encoding an existing bundle.
+A switch creates a fresh bundle from Google's token grant, keeping the previous `auth_method` or using
+`consumer` when there was none.
+
+### OAuth client discovery
+
+`antigravity/oauth_client.rs` scans the installed Antigravity's `bin/` directory for secret candidates,
+cuts each to 35 characters because Go packs literals back to back, and probes Google's token endpoint
+with a bogus authorization code. It selects the candidate returning `invalid_grant`; the client and
+response contract are in [OAuth client](antigravity-integration.md#oauth-client).
+
+### Process control
+
+`antigravity/process.rs` sends SIGTERM (Windows: `taskkill` without `/F`) to the app and CLI, waits up to
+8 s, then kills whatever is left. It relaunches with `open <bundle>` (Windows: the executable, detached)
+and waits for the main process. The processes that must exit and why are in
+[Processes](antigravity-integration.md#processes).
+
 ## Operations
 
 One operation runs at a time (`Orbit::begin` returns `Busy` otherwise): `adding`, `switching` (with its
@@ -80,11 +113,9 @@ current step), `stopping`, `restarting`. The background pass skips while one is 
 credential. A different fingerprint means a new sign-in: the account is adopted once. A removed account
 therefore stays removed until Antigravity signs in again.
 
-## Storage
+## Persistence
 
-| What | Where |
-|---|---|
-| Account metadata | `<app data>/accounts.json` (`~/Library/Application Support/io.github.shengyy.agyorbit/`, `%APPDATA%\io.github.shengyy.agyorbit\`) |
-| Refresh tokens | Credential store, service `agyorbit`, account = Google `sub` |
-| Access tokens | Memory only |
-| Logs | `<app log dir>` (`~/Library/Logs/io.github.shengyy.agyorbit/`), never containing tokens |
+`registry.rs` writes metadata to a temporary JSON file and renames it over `accounts.json`.
+`vault.rs` delegates refresh-token storage to `secret_store/`; `tokens.rs` caches access tokens in memory.
+The data inventory, storage locations and logging boundary are owned by
+[SECURITY.md](../SECURITY.md#what-is-stored).

@@ -1,8 +1,8 @@
 # Docs
 
-The map of every document and directory in this repository, and the rules for writing them. `docs/` holds
-only long-lived **current** facts that every maintainer needs; history lives in Git, pull requests and
-[CHANGELOG.md](../CHANGELOG.md).
+The map of every document and directory in this repository, and the rules for writing them. Each
+document below owns its subject; this page owns their routing. `docs/` holds only long-lived **current**
+facts that every maintainer needs; history lives in Git, pull requests and [CHANGELOG.md](../CHANGELOG.md).
 
 ## Core documents
 
@@ -11,14 +11,18 @@ only long-lived **current** facts that every maintainer needs; history lives in 
 | [README.md](../README.md) / [README.zh-CN.md](../README.zh-CN.md) | Entry for users: what it is, install, use. The two are kept in sync |
 | [PRODUCT.md](../PRODUCT.md) | What AgyOrbit does, its rules and its non-goals |
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | Human workflow: setup, checks, issues, pull requests |
-| [AGENTS.md](../AGENTS.md) / [CLAUDE.md](../CLAUDE.md) | Boundaries and routing for coding agents, loaded every session |
-| [SECURITY.md](../SECURITY.md) | What is stored, what is sent, how to report a vulnerability |
+| [AGENTS.md](../AGENTS.md) | Shared boundaries and routing for coding agents, loaded every session |
+| [CLAUDE.md](../CLAUDE.md) | Imports AGENTS.md and adds Claude-specific context |
+| [SECURITY.md](../SECURITY.md) | Data inventory and storage locations, network sends, vulnerability reporting |
 | [CHANGELOG.md](../CHANGELOG.md) | User-visible changes per version |
-| [status.md](status.md) | What is true now: platforms, what has been verified |
-| [architecture.md](architecture.md) | Code map, data flow, switch sequence, storage |
-| [antigravity-integration.md](antigravity-integration.md) | Every external fact about Antigravity, with the version it was verified on |
-| [design.md](design.md) | How it looks: surfaces, components, tokens, icon, screenshots |
-| [release.md](release.md) | Versioning, the release workflow, signing, the website |
+| [docs/README.md](README.md) | Document and directory responsibilities, routing and writing rules |
+| [status.md](status.md) | Platform support and scope of feature verification |
+| [architecture.md](architecture.md) | Code map, data flow, switch sequence, persistence mechanisms |
+| [antigravity-integration.md](antigravity-integration.md) | Antigravity's external contracts and verified versions: credentials, OAuth, APIs, processes |
+| [design.md](design.md) | App and website visuals and interaction, icons and screenshots |
+| [release.md](release.md) | Versioning, builds, release workflow, signing and website publishing |
+| [pull_request_template.md](../.github/pull_request_template.md) | Pull request submission form; contributor workflow is in CONTRIBUTING.md |
+| [LICENSE](../LICENSE) | MIT license terms |
 
 ## Directories
 

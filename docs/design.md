@@ -1,5 +1,9 @@
 # Design
 
+This page owns the app and website's visual presentation and interaction, icons and screenshots.
+Product behavior lives in [PRODUCT.md](../PRODUCT.md); build, signing and website publishing live in
+[release.md](release.md).
+
 AgyOrbit should feel like part of the operating system: one glance to see every account's quota, one
 confirmed click to switch.
 
@@ -11,8 +15,8 @@ confirmed click to switch.
 - Both run the same React UI; `platform-macos` / `platform-windows` on the root only change surface
   tokens and sizing.
 - Left click toggles the surface. Right click opens a native menu (open, quit).
-- Open at Login registers AgyOrbit itself as a login item on macOS (SMAppService), so System Settings
-  shows it by name and icon; on Windows it starts hidden in the tray.
+- Open at Login shows AgyOrbit by name and icon in macOS System Settings; on Windows it starts hidden
+  in the tray. Registration is described in [architecture.md](architecture.md).
 
 ## Interaction
 
@@ -70,3 +74,10 @@ It builds the frontend, replaces Tauri's IPC with `scripts/screenshot/mock-tauri
 scenes), stages the popover under a menu bar with `frame.css`, renders at 3x and writes
 `assets/screenshots/{hero,flow}-{light,dark}@3x.png` plus 2x copies without the suffix. The README uses
 the 2x images; the website offers both through `srcset`. Never commit screenshots of real accounts.
+
+## Website
+
+`site/style.css` uses rem sizes with a fluid root font size (16px up to ~1280px wide, 22px on large
+displays), so the whole page scales up instead of leaving wide margins. Screenshot generation and
+resolutions are defined above; `site/index.html` selects them through `srcset`. Publishing, download
+button behavior and local preview are in [release.md](release.md#website).
