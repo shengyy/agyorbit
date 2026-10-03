@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/shengyy/agyorbit/actions/workflows/ci.yml"><img src="https://github.com/shengyy/agyorbit/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/shengyy/agyorbit/actions/workflows/ci.yml"><img src="https://github.com/shengyy/agyorbit/actions/workflows/ci.yml/badge.svg?event=pull_request" alt="CI"></a>
   <a href="https://github.com/shengyy/agyorbit/releases"><img src="https://img.shields.io/github/v/release/shengyy/agyorbit?include_prereleases&sort=semver" alt="Release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
 </p>

@@ -46,6 +46,14 @@ example on Windows or a new Antigravity version), update the table in
 
 ## Pull requests
 
+`main` is protected for everyone, maintainers included: no direct pushes, changes land through pull
+requests only.
+
+1. Branch from `main` and open a **draft** PR early. CI skips drafts.
+2. When the checks above pass locally, mark the PR **ready for review**. CI then runs on macOS and
+   Windows; the `gate` check must pass and the branch must contain the latest `main`.
+3. Maintainers squash-merge.
+
 - One focused change per PR, with a short imperative title.
 - Add an entry under `[Unreleased]` in `CHANGELOG.md` for user-visible changes.
 - Update both `README.md` and `README.zh-CN.md` when either changes.
