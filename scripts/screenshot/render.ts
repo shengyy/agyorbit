@@ -1,6 +1,8 @@
 // Renders the README and site screenshots from the real UI with demo data.
 //   bun scripts/screenshot/render.ts
-// Needs Google Chrome and ImageMagick (`magick`). Writes assets/screenshots/{hero,flow}-{light,dark}.png.
+// Needs Google Chrome and ImageMagick (`magick`). Renders at 3x and writes
+// assets/screenshots/{hero,flow}-{light,dark}@3x.png (website, large displays)
+// plus a 2x copy without the suffix (README, website default).
 
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -92,9 +94,9 @@ const evaluate = async (expression: string) =>
 
 async function shoot(scene: string, scheme: "light" | "dark", ready: string, file: string) {
   await send("Emulation.setDeviceMetricsOverride", {
-    width: 640,
-    height: 820,
-    deviceScaleFactor: 2,
+    width: 720,
+    height: 920,
+    deviceScaleFactor: 3,
     mobile: false,
   });
   await send("Emulation.setDefaultBackgroundColorOverride", { color: { r: 0, g: 0, b: 0, a: 0 } });
@@ -109,7 +111,7 @@ async function shoot(scene: string, scheme: "light" | "dark", ready: string, fil
   const box = JSON.parse(
     String(await evaluate("JSON.stringify(document.querySelector('.stage').getBoundingClientRect())")),
   ) as { x: number; y: number; width: number; height: number };
-  const margin = 28; // room for the stage shadow
+  const margin = 72; // room for the whole stage shadow (0 18px 50px)
   const shot = await send("Page.captureScreenshot", {
     format: "png",
     captureBeyondViewport: true,
@@ -124,14 +126,20 @@ async function shoot(scene: string, scheme: "light" | "dark", ready: string, fil
   await Bun.write(file, Buffer.from(String(shot.data), "base64"));
 }
 
-// 3. Hero (the list) and flow (confirm + progress) in both appearances.
+// 3. Hero (the list) and flow (confirm + progress) in both appearances, at 3x and 2x.
 const work = await mkdtemp(join(tmpdir(), "agyorbit-shots-"));
+const publish = async (source: string, name: string) => {
+  await $`cp ${source} ${join(out, `${name}@3x.png`)}`.quiet();
+  await $`magick ${source} -resize 66.6667% ${join(out, `${name}.png`)}`.quiet();
+};
 try {
   for (const scheme of ["light", "dark"] as const) {
-    await shoot("list", scheme, ".card .tag-best", join(out, `hero-${scheme}.png`));
+    await shoot("list", scheme, ".card .tag-best", join(work, "hero.png"));
+    await publish(join(work, "hero.png"), `hero-${scheme}`);
     await shoot("confirm", scheme, ".sheet h2", join(work, "confirm.png"));
     await shoot("switching", scheme, ".steps .now", join(work, "switching.png"));
-    await $`magick ${join(work, "confirm.png")} ${join(work, "switching.png")} -background none +append ${join(out, `flow-${scheme}.png`)}`.quiet();
+    await $`magick ${join(work, "confirm.png")} ${join(work, "switching.png")} -background none +append ${join(work, "flow.png")}`.quiet();
+    await publish(join(work, "flow.png"), `flow-${scheme}`);
   }
 } finally {
   socket.close();
@@ -139,4 +147,4 @@ try {
   server.stop(true);
   await Promise.all([site, profile, work].map((dir) => rm(dir, { recursive: true, force: true })));
 }
-console.log("wrote hero-{light,dark}.png and flow-{light,dark}.png to assets/screenshots");
+console.log("wrote {hero,flow}-{light,dark}{,@3x}.png to assets/screenshots");

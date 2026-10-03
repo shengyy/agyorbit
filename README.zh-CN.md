@@ -24,7 +24,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/hero-dark.png">
-    <img src="assets/screenshots/hero-light.png" width="520" alt="AgyOrbit 菜单栏弹出面板，列出三个账号及各自的 Gemini 和 Claude 额度">
+    <img src="assets/screenshots/hero-light.png" width="640" alt="AgyOrbit 菜单栏弹出面板，列出三个账号及各自的 Gemini 和 Claude 额度">
   </picture>
 </p>
 

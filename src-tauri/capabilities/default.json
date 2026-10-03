@@ -6,7 +6,6 @@
   "permissions": [
     "core:default",
     "core:menu:default",
-    "autostart:default",
     "opener:default"
   ]
 }

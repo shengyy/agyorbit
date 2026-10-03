@@ -1,6 +1,6 @@
 [package]
 name = "agyorbit"
-version = "0.1.0"
+version = "0.1.1"
 description = "Menu bar / tray account switcher for Google Antigravity"
 authors = ["AgyOrbit contributors"]
 license = "MIT"
@@ -19,7 +19,6 @@ tauri-build = { version = "2.7", features = [] }
 tauri = { version = "2.12", features = ["tray-icon", "image-png", "macos-private-api"] }
 tauri-plugin-positioner = { version = "2.4", features = ["tray-icon"] }
 tauri-plugin-opener = "2.7"
-tauri-plugin-autostart = "2.7"
 tauri-plugin-single-instance = "2.5"
 tauri-plugin-log = "2.10"
 serde = { version = "1", features = ["derive"] }
@@ -34,6 +33,7 @@ thiserror = "2"
 chrono = { version = "0.4", default-features = false, features = ["clock", "serde", "std"] }
 sysinfo = { version = "0.39", default-features = false, features = ["system"] }
 memchr = "2"
+auto-launch = "0.6"
 sys-locale = "0.3"
 log = "0.4"
 

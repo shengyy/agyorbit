@@ -34,6 +34,7 @@ anything the backend can know: it renders the latest snapshot and calls commands
 | `switcher.rs` | Switching accounts, stopping and restarting Antigravity |
 | `quota.rs` | Refreshing quota and plan for each account |
 | `scheduler.rs` | The 5-minute background pass |
+| `autostart.rs` | Open at Login: SMAppService on macOS, the per-user Run key on Windows |
 | `registry.rs` | Account metadata in `accounts.json` (no secrets) |
 | `vault.rs` | Per-account refresh tokens in the credential store |
 | `tokens.rs` | In-memory access tokens |

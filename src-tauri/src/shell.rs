@@ -10,7 +10,9 @@ use tauri::{
 };
 
 pub const LABEL: &str = "main";
-/// Launch-at-login passes this so the window starts hidden.
+/// Open at Login passes this on Windows so the window starts hidden; the
+/// macOS popover is hidden until clicked anyway.
+#[cfg(not(target_os = "macos"))]
 pub const BACKGROUND_ARG: &str = "--background";
 pub const SHOWN_EVENT: &str = "agyorbit://shown";
 #[cfg(target_os = "macos")]

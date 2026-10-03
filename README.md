@@ -24,7 +24,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/hero-dark.png">
-    <img src="assets/screenshots/hero-light.png" width="520" alt="The AgyOrbit popover under the menu bar, listing three accounts with their Gemini and Claude quotas">
+    <img src="assets/screenshots/hero-light.png" width="640" alt="The AgyOrbit popover under the menu bar, listing three accounts with their Gemini and Claude quotas">
   </picture>
 </p>
 

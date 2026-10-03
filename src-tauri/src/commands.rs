@@ -11,7 +11,7 @@ use crate::antigravity::process::{self, RelatedProcess};
 use crate::error::{Error, Result};
 use crate::model::Snapshot;
 use crate::state::Orbit;
-use crate::{accounts, quota, scheduler, shell, switcher};
+use crate::{accounts, autostart, quota, scheduler, shell, switcher};
 
 type Shared<'a> = State<'a, Arc<Orbit>>;
 
@@ -83,6 +83,16 @@ pub fn reveal_logs(app: AppHandle) -> Result<()> {
     app.opener()
         .open_path(dir.to_string_lossy(), None::<&str>)
         .map_err(|err| Error::Invalid(err.to_string()))
+}
+
+#[tauri::command]
+pub fn autostart_enabled() -> Result<bool> {
+    autostart::is_enabled()
+}
+
+#[tauri::command]
+pub fn set_autostart(enabled: bool) -> Result<()> {
+    autostart::set_enabled(enabled)
 }
 
 #[tauri::command]

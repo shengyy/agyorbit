@@ -16,6 +16,8 @@ export const ipc = {
   restartAntigravity: () => invoke<void>("restart_antigravity"),
   resizePanel: (height: number) => invoke<void>("resize_panel", { height }),
   revealLogs: () => invoke<void>("reveal_logs"),
+  autostartEnabled: () => invoke<boolean>("autostart_enabled"),
+  setAutostart: (enabled: boolean) => invoke<void>("set_autostart", { enabled }),
   quit: () => invoke<void>("quit"),
 };
 

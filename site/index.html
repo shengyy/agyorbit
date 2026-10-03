@@ -57,11 +57,17 @@
           </p>
         </div>
         <picture class="hero-shot">
-          <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/hero-dark.png" />
+          <source
+            media="(prefers-color-scheme: dark)"
+            srcset="assets/screenshots/hero-dark.png 1328w, assets/screenshots/hero-dark@3x.png 1992w"
+            sizes="(max-width: 860px) 92vw, calc(22vw + 360px)"
+          />
           <img
             src="assets/screenshots/hero-light.png"
-            width="576"
-            height="600"
+            srcset="assets/screenshots/hero-light.png 1328w, assets/screenshots/hero-light@3x.png 1992w"
+            sizes="(max-width: 860px) 92vw, calc(22vw + 360px)"
+            width="664"
+            height="688"
             alt="The AgyOrbit popover under the menu bar, listing three accounts with their Gemini and Claude quotas"
           />
         </picture>
@@ -110,11 +116,17 @@
           Antigravity, signs it in to the new account and opens it again.
         </p>
         <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/flow-dark.png" />
+          <source
+            media="(prefers-color-scheme: dark)"
+            srcset="assets/screenshots/flow-dark.png 2656w, assets/screenshots/flow-dark@3x.png 3984w"
+            sizes="(max-width: 1240px) calc(100vw - 32px), calc(39.6vw + 648px)"
+          />
           <img
             src="assets/screenshots/flow-light.png"
-            width="1152"
-            height="600"
+            srcset="assets/screenshots/flow-light.png 2656w, assets/screenshots/flow-light@3x.png 3984w"
+            sizes="(max-width: 1240px) calc(100vw - 32px), calc(39.6vw + 648px)"
+            width="1328"
+            height="688"
             alt="A confirmation sheet before switching, and the switch progress steps"
             loading="lazy"
           />

@@ -10,8 +10,9 @@ checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
 name = "agyorbit"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
+ "auto-launch",
  "base64 0.23.1",
  "chrono",
  "getrandom 0.4.3",
@@ -25,7 +26,6 @@ dependencies = [
  "sysinfo",
  "tauri",
  "tauri-build",
- "tauri-plugin-autostart",
  "tauri-plugin-log",
  "tauri-plugin-opener",
  "tauri-plugin-positioner",
@@ -4106,20 +4106,6 @@ dependencies = [
  "serde_json",
  "tauri-utils",
  "walkdir",
-]
-
-[[package]]
-name = "tauri-plugin-autostart"
-version = "2.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bce56ceb0a99b8ab5eebc977ba9ffc62391b862648cb9ab76fc8bc7231b8f7e2"
-dependencies = [
- "auto-launch",
- "serde",
- "serde_json",
- "tauri",
- "tauri-plugin",
- "thiserror 2.0.21",
 ]
 
 [[package]]

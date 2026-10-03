@@ -2,6 +2,7 @@
 
 mod accounts;
 mod antigravity;
+mod autostart;
 mod commands;
 mod error;
 mod google;
@@ -22,7 +23,6 @@ mod vault;
 use std::sync::Arc;
 
 use tauri::Manager;
-use tauri_plugin_autostart::MacosLauncher;
 
 use crate::state::Orbit;
 
@@ -40,10 +40,6 @@ pub fn run() {
         )
         .plugin(tauri_plugin_positioner::init())
         .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_autostart::init(
-            MacosLauncher::LaunchAgent,
-            Some(vec![shell::BACKGROUND_ARG]),
-        ))
         .setup(|app| {
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
@@ -68,6 +64,8 @@ pub fn run() {
             commands::restart_antigravity,
             commands::resize_panel,
             commands::reveal_logs,
+            commands::autostart_enabled,
+            commands::set_autostart,
             commands::quit,
         ])
         .run(tauri::generate_context!())

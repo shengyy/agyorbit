@@ -39,7 +39,9 @@ Artifacts land in `src-tauri/target/<target>/release/bundle/`.
 `site/` is the landing page at <https://shengyy.github.io/agyorbit/>. The `pages` workflow deploys it on
 every push to `main` that touches `site/` or `assets/`, copying `assets/brand` and `assets/screenshots`
 next to it. The download buttons ask GitHub's API for the latest release and pick its `.dmg` and
-`-setup.exe`, so a new release needs no site change. Preview locally:
+`-setup.exe`, so a new release needs no site change. Sizes are in rem with a fluid root font size
+(16px up to ~1280px wide, 22px on large displays), so the whole page scales up instead of leaving wide
+margins; screenshots come in 2x and 3x through `srcset`. Preview locally:
 
 ```bash
 mkdir -p /tmp/agyorbit-site/assets && cp -R site/. /tmp/agyorbit-site/ \

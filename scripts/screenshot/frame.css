@@ -5,9 +5,10 @@
   color-scheme: only light;
 }
 
+/* Room on every side for the stage shadow the renderer captures. */
 body {
   width: max-content;
-  padding: 28px 28px 40px;
+  padding: 80px;
 }
 
 .stage {

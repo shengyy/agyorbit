@@ -11,6 +11,8 @@ confirmed click to switch.
 - Both run the same React UI; `platform-macos` / `platform-windows` on the root only change surface
   tokens and sizing.
 - Left click toggles the surface. Right click opens a native menu (open, quit).
+- Open at Login registers AgyOrbit itself as a login item on macOS (SMAppService), so System Settings
+  shows it by name and icon; on Windows it starts hidden in the tray.
 
 ## Interaction rules
 
@@ -66,5 +68,6 @@ bun scripts/screenshot/render.ts   # needs Google Chrome and ImageMagick
 ```
 
 It builds the frontend, replaces Tauri's IPC with `scripts/screenshot/mock-tauri.js` (demo data and
-scenes), stages the popover under a menu bar with `frame.css`, and writes
-`assets/screenshots/{hero,flow}-{light,dark}.png`. Never commit screenshots of real accounts.
+scenes), stages the popover under a menu bar with `frame.css`, renders at 3x and writes
+`assets/screenshots/{hero,flow}-{light,dark}@3x.png` plus 2x copies without the suffix. The README uses
+the 2x images; the website offers both through `srcset`. Never commit screenshots of real accounts.

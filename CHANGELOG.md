@@ -6,6 +6,17 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-03
+
+### Changed
+
+- Open at Login registers AgyOrbit as a login item through SMAppService on macOS, so System Settings
+  lists it by name and icon instead of as a background item from an unidentified developer. If you
+  turned it on in 0.1.0, delete `~/Library/LaunchAgents/AgyOrbit.plist` and turn it on again. Windows
+  keeps the per-user Run key.
+- Website: the page scales with large displays instead of leaving wide margins, with sharper
+  screenshots.
+
 ## [0.1.0] - 2026-10-03
 
 ### Added

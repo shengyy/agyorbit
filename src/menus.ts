@@ -2,7 +2,6 @@
 
 import { LogicalPosition } from "@tauri-apps/api/dpi";
 import { CheckMenuItem, Menu } from "@tauri-apps/api/menu";
-import { disable, enable, isEnabled } from "@tauri-apps/plugin-autostart";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import type { MouseEvent } from "react";
 import { t } from "./i18n";
@@ -22,10 +21,11 @@ function anchor(event: MouseEvent): LogicalPosition {
 
 export async function showAppMenu(event: MouseEvent, version: string) {
   const at = anchor(event);
+  const enabled = await ipc.autostartEnabled().catch(() => false);
   const launchAtLogin = await CheckMenuItem.new({
     text: t("menu.launchAtLogin"),
-    checked: await isEnabled(),
-    action: async () => ((await isEnabled()) ? disable() : enable()),
+    checked: enabled,
+    action: () => void ipc.setAutostart(!enabled),
   });
   const menu = await Menu.new({
     items: [
