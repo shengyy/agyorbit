@@ -40,6 +40,7 @@ pub fn run() {
         )
         .plugin(tauri_plugin_positioner::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
         .setup(|app| {
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);

@@ -17,6 +17,10 @@ Releases follow [SemVer](https://semver.org).
 
 Builds are not signed with an Apple Developer ID or a Windows code-signing certificate yet.
 
+macOS bundles are ad-hoc signed during bundling (`bundle.macOS.signingIdentity: "-"`), which gives every
+build the code identifier `io.github.shengyy.agyorbit`. Keep it: macOS keys the SMAppService login item
+to the code identity, and the linker's default ad-hoc signature changes it on every build.
+
 - macOS: Gatekeeper blocks the first launch of a downloaded build. Open it once with right-click → Open,
   or clear the quarantine flag: `xattr -dr com.apple.quarantine /Applications/AgyOrbit.app`.
 - Windows: SmartScreen warns on first run; choose "More info" → "Run anyway".

@@ -6,6 +6,23 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-10-03
+
+### Fixed
+
+- Menu items did nothing when clicked (Show Logs, GitHub, Quit, and the account menu's Sign In Again,
+  Copy Email and Remove). Tauri 2.12 drops items declared inline in `Menu.new` right after building the
+  menu, which removes their click handlers; every item is now created as its own resource.
+- Copy Email writes through the system clipboard; the web clipboard API refuses writes that do not come
+  from a click inside the page.
+- Open at Login survives updates on macOS. Builds are now ad-hoc signed with the bundle identifier, so
+  every version has the same code identity, which is what macOS ties the login item to. Turn it on once
+  more after updating from 0.1.1.
+
+### Added
+
+- *AgyOrbit Website* in the `⋯` menu.
+
 ## [0.1.1] - 2026-10-03
 
 ### Changed

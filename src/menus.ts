@@ -1,7 +1,15 @@
 // Native context menus, so they look and behave like the platform's own.
+//
+// Every item is created as its own resource (MenuItem.new and friends)
+// instead of inline in Menu.new: Tauri 2.12 drops inline items as soon as the
+// menu is built, and dropping an item removes its click handler, so inline
+// items never respond. The resources behind the menu on screen are released
+// when the next menu opens.
 
+import type { Resource } from "@tauri-apps/api/core";
 import { LogicalPosition } from "@tauri-apps/api/dpi";
-import { CheckMenuItem, Menu } from "@tauri-apps/api/menu";
+import { CheckMenuItem, Menu, MenuItem, PredefinedMenuItem } from "@tauri-apps/api/menu";
+import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import type { MouseEvent } from "react";
 import { t } from "./i18n";
@@ -9,6 +17,11 @@ import { ipc } from "./ipc";
 import type { Account } from "./types";
 
 const REPOSITORY = "https://github.com/shengyy/agyorbit";
+const WEBSITE = "https://shengyy.github.io/agyorbit/";
+
+type Entry = "separator" | { text: string; action?: () => void; enabled?: boolean; checked?: boolean };
+
+let onScreen: Resource[] = [];
 
 function anchor(event: MouseEvent): LogicalPosition {
   const target = event.currentTarget as HTMLElement | null;
@@ -19,26 +32,43 @@ function anchor(event: MouseEvent): LogicalPosition {
   return new LogicalPosition(event.clientX, event.clientY);
 }
 
+async function popup(entries: Entry[], at: LogicalPosition) {
+  for (const resource of onScreen) void resource.close();
+  const items = await Promise.all(
+    entries.map((entry) => {
+      if (entry === "separator") return PredefinedMenuItem.new({ item: "Separator" });
+      const { text, action, enabled = true, checked } = entry;
+      return checked === undefined
+        ? MenuItem.new({ text, enabled, action })
+        : CheckMenuItem.new({ text, enabled, checked, action });
+    }),
+  );
+  const menu = await Menu.new({ items });
+  onScreen = [menu, ...items];
+  await menu.popup(at);
+}
+
 export async function showAppMenu(event: MouseEvent, version: string) {
   const at = anchor(event);
-  const enabled = await ipc.autostartEnabled().catch(() => false);
-  const launchAtLogin = await CheckMenuItem.new({
-    text: t("menu.launchAtLogin"),
-    checked: enabled,
-    action: () => void ipc.setAutostart(!enabled),
-  });
-  const menu = await Menu.new({
-    items: [
+  const launchAtLogin = await ipc.autostartEnabled().catch(() => false);
+  await popup(
+    [
       { text: `AgyOrbit ${version}`, enabled: false },
-      { item: "Separator" },
-      launchAtLogin,
+      "separator",
+      {
+        text: t("menu.launchAtLogin"),
+        checked: launchAtLogin,
+        action: () => void ipc.setAutostart(!launchAtLogin),
+      },
       { text: t("menu.logs"), action: () => void ipc.revealLogs() },
+      "separator",
+      { text: t("menu.website"), action: () => void openUrl(WEBSITE) },
       { text: t("menu.github"), action: () => void openUrl(REPOSITORY) },
-      { item: "Separator" },
+      "separator",
       { text: t("menu.quit"), action: () => void ipc.quit() },
     ],
-  });
-  await menu.popup(at);
+    at,
+  );
 }
 
 interface AccountActions {
@@ -47,14 +77,14 @@ interface AccountActions {
 }
 
 export async function showAccountMenu(event: MouseEvent, account: Account, actions: AccountActions) {
-  const at = anchor(event);
-  const menu = await Menu.new({
-    items: [
+  await popup(
+    [
       { text: t("menu.reauth"), action: actions.onReauth },
-      { text: t("menu.copyEmail"), action: () => void navigator.clipboard.writeText(account.email) },
-      { item: "Separator" },
+      // A native menu click is not a page gesture, so the web clipboard API would refuse it.
+      { text: t("menu.copyEmail"), action: () => void writeText(account.email) },
+      "separator",
       { text: t("menu.remove"), action: actions.onRemove },
     ],
-  });
-  await menu.popup(at);
+    anchor(event),
+  );
 }
