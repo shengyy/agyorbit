@@ -57,9 +57,6 @@ to the code identity, and the linker's default ad-hoc signature changes it on ev
 
 First-launch instructions for Gatekeeper and SmartScreen live in the [README](../README.md#install).
 
-Adding signing later only needs secrets in the workflow (`APPLE_CERTIFICATE`, `APPLE_SIGNING_IDENTITY`,
-notarization credentials, or a Windows certificate) as described in Tauri's distribution guide.
-
 ## Local build
 
 ```bash

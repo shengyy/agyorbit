@@ -40,8 +40,8 @@ quota left. AgyOrbit lives in the menu bar (macOS) or the notification area (Win
   5-hour and weekly windows side by side, with reset times. The account with the most quota left is
   marked.
 - **Switch with one confirmed click.** AgyOrbit closes Antigravity and the `agy` CLI, signs Antigravity
-  in to the chosen account, verifies it and reopens Antigravity. If anything fails, the previous sign-in
-  is restored.
+  in to the chosen account, verifies it and reopens Antigravity. If writing or verifying the new sign-in
+  fails, the previous one is restored.
 - **Add accounts in the browser.** A normal Google sign-in page; no need to sign out of Antigravity. The
   account Antigravity is already using is picked up automatically.
 - **Restart or quit Antigravity** from the same place, with a confirmation that lists what will close.
