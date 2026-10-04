@@ -40,7 +40,12 @@ export function UpdateSheet({
       <p className="sheet-note">
         {currentVersion} → {update.version}
       </p>
-      {update.notes && <div className="update-notes">{update.notes}</div>}
+      {update.notes && (
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard users need to focus and scroll long notes.
+        <section className="update-notes" aria-label={t("update.notes")} tabIndex={0}>
+          {update.notes}
+        </section>
+      )}
       <p>{t("update.body")}</p>
       <SheetActions>
         <button type="button" className="btn" onClick={onCancel}>
@@ -55,6 +60,8 @@ export function UpdateSheet({
 }
 
 export function CheckingUpdateSheet({ onCancel }: { onCancel: () => void }) {
+  const cancel = useRef<HTMLButtonElement>(null);
+  useEffect(() => cancel.current?.focus(), []);
   return (
     <Sheet onDismiss={onCancel}>
       <div className="activity-line">
@@ -62,7 +69,7 @@ export function CheckingUpdateSheet({ onCancel }: { onCancel: () => void }) {
         {t("update.checking")}
       </div>
       <SheetActions>
-        <button type="button" className="btn" onClick={onCancel}>
+        <button type="button" className="btn" ref={cancel} onClick={onCancel}>
           {t("update.later")}
         </button>
       </SheetActions>

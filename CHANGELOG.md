@@ -6,6 +6,8 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-10-04
+
 ### Added
 
 - App updates: check at startup and daily, or from the app menu. View the release notes and confirm

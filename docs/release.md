@@ -40,7 +40,14 @@ browser. The maintainer decides *when*; the agent does the rest.
    Mount the `.dmg` and confirm `codesign -dv` reports the identifier `io.github.shengyy.agyorbit`,
    `lipo -archs` lists `x86_64 arm64`, and `CFBundleShortVersionString` is `X.Y.Z`; the Windows
    `-setup.exe` must be attached too. Download `latest.json`, the `.app.tar.gz`, `-setup.exe` and their
-   `.sig` files into the same temporary directory. Verify the manifest points to this tag, both macOS
+   `.sig` files into the same temporary directory. Save the draft's GitHub release metadata alongside
+   them as `release.json` (the updater action uses its API asset URLs):
+
+   ```bash
+   gh api 'repos/shengyy/agyorbit/releases?per_page=100' --jq '.[] | select(.tag_name == "vX.Y.Z")' > <tmp>/release.json
+   ```
+
+   Verify every manifest asset belongs to this tag, both macOS
    architectures use the universal package, Windows uses NSIS, and signatures verify with the shipped
    public key and announced version:
 

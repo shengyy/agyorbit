@@ -35,6 +35,10 @@
   overflow-wrap: anywhere;
 }
 
+.sheet:focus {
+  outline: none;
+}
+
 .sheet p {
   margin: 0 0 6px;
   font-size: 12px;

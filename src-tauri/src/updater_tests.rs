@@ -222,6 +222,10 @@ async fn release_artifacts_verify() {
     let version = manifest["version"].as_str().unwrap();
     assert_eq!(version, env!("CARGO_PKG_VERSION"));
     assert!(!manifest["notes"].as_str().unwrap().trim().is_empty());
+    let release: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(directory.join("release.json")).unwrap()).unwrap();
+    assert_eq!(release["tag_name"], format!("v{version}"));
+    let assets = release["assets"].as_array().unwrap();
     let config: serde_json::Value =
         serde_json::from_str(include_str!("../tauri.conf.json")).unwrap();
     let pubkey = config["plugins"]["updater"]["pubkey"].as_str().unwrap();
@@ -230,10 +234,13 @@ async fn release_artifacts_verify() {
     for target in ["darwin-aarch64", "darwin-x86_64", "windows-x86_64"] {
         let artifact = &manifest["platforms"][target];
         let url = artifact["url"].as_str().unwrap();
-        assert!(url.starts_with(&format!(
-            "https://github.com/shengyy/agyorbit/releases/download/v{version}/"
-        )));
-        let file = url.rsplit('/').next().unwrap();
+        assert!(url.starts_with("https://api.github.com/repos/shengyy/agyorbit/releases/assets/"));
+        let asset = assets.iter().find(|asset| asset["url"] == url).unwrap();
+        let file = asset["name"].as_str().unwrap();
+        assert_eq!(
+            asset["browser_download_url"],
+            format!("https://github.com/shengyy/agyorbit/releases/download/v{version}/{file}")
+        );
         assert!(if target.starts_with("darwin") {
             file.ends_with(".app.tar.gz")
         } else {

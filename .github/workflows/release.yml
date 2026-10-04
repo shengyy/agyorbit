@@ -50,6 +50,8 @@ jobs:
       contents: write
     strategy:
       fail-fast: false
+      # The action reads/merges/replaces latest.json; keep its writers serial.
+      max-parallel: 1
       matrix:
         include:
           - os: macos-latest

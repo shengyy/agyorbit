@@ -33,7 +33,8 @@ Each external fact these rely on, and the Antigravity version it was checked aga
 
 - Update sheets in Chrome on macOS, in both languages and appearances: long notes, an empty account
   list, determinate and indeterminate download progress, Escape/Later dismissal, and exactly one
-  installation request after confirmation.
+  installation request after confirmation. Keyboard focus stays within each sheet, including its
+  scrollable notes, then returns to the account list when dismissed.
 - Official Tauri updater loopback tests: valid signatures, tampered payload rejection, signed-version
   mismatch rejection, current/older release filtering and HTTP failures. The macOS installer replaces
   an isolated synthetic bundle and leaves account data outside it intact; an invalid archive leaves
