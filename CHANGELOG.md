@@ -6,6 +6,16 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- The Switch button no longer overlaps the Most left tag. Account tags follow the name and plan badge,
+  and the button has its own space beside the email.
+
+### Changed
+
+- Every Gemini and Claude quota window shows its own reset countdown below the meter, including the
+  weekly limit. Missing reset times and windows are explicit, and elapsed times await a refresh.
+
 ## [0.1.2] - 2026-10-03
 
 ### Fixed

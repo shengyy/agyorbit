@@ -1,7 +1,7 @@
 .quota-row {
   display: grid;
   grid-template-columns: 46px 1fr 1fr;
-  align-items: center;
+  align-items: start;
   gap: 12px;
 }
 
@@ -15,9 +15,16 @@
   display: grid;
   grid-template-columns: auto 1fr 30px;
   align-items: center;
-  gap: 6px;
+  gap: 3px 6px;
   min-width: 0;
   --meter-color: var(--meter-ok);
+}
+
+.meter-reset {
+  grid-column: 1 / -1;
+  font-size: 10px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
 }
 
 .meter-low {

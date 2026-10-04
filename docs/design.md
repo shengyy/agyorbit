@@ -34,11 +34,15 @@ What happens and when is defined in [PRODUCT.md](../PRODUCT.md); this is how it 
 ## Account card
 
 - Avatar (Google photo, else initials), name, plan badge (`PRO` / `ULTRA` / `FREE`), email.
-- Tags: `Current` for the account in use, `Most left` for the account worth switching to.
+- Tags follow the name and plan badge: `Current` for the account in use, `Most left` for the account
+  worth switching to.
 - One row per quota group (Gemini, Claude) with the 5-hour and weekly windows side by side, each a meter
   and the share remaining. Colour changes only when it matters: amber below 35 %, red below 10 %.
-- When a window is low, a footnote says when it recovers; hovering any meter shows its reset time.
-- The Switch button appears on hover and floats over the tags, so it never squeezes the name.
+- Each window shows its reset countdown below the meter, including at full quota when the API supplies
+  a time; hovering shows the exact local reset date and time. Missing times are labeled unavailable,
+  and elapsed times await a quota refresh.
+- The Switch button appears on hover or keyboard focus in reserved space beside the email, so it never
+  overlaps the name, plan or tags.
 
 ## Visual tokens
 

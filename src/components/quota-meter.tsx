@@ -11,15 +11,16 @@ function Meter({ label, window }: { label: string; window: QuotaWindow | null })
         <span className="meter-label">{label}</span>
         <span className="meter-track" />
         <span className="meter-value">–</span>
+        <span className="meter-reset">{t("quota.unavailable")}</span>
       </div>
     );
   }
-  const used = window.remaining < 1;
-  const resetsIn = used ? untilReset(window.resetAt) : null;
-  const tooltip =
-    resetsIn && window.resetAt
-      ? `${t("quota.resetsAt", { time: clock(window.resetAt) })} · ${t("quota.resetsIn", { time: resetsIn })}`
-      : t("quota.unused");
+  const resetAt = window.resetAt && Number.isFinite(Date.parse(window.resetAt)) ? window.resetAt : null;
+  const resetsIn = untilReset(resetAt);
+  const resetLabel = resetsIn
+    ? t("quota.resetsIn", { time: resetsIn })
+    : t(resetAt ? "quota.resetPending" : "quota.resetUnknown");
+  const tooltip = resetAt ? `${t("quota.resetsAt", { time: clock(resetAt) })} · ${resetLabel}` : resetLabel;
   return (
     <div className={`meter meter-${severity(window.remaining)}`} title={tooltip}>
       <span className="meter-label">{label}</span>
@@ -27,6 +28,7 @@ function Meter({ label, window }: { label: string; window: QuotaWindow | null })
         <span className="meter-fill" style={{ width: `${Math.max(window.remaining * 100, 2)}%` }} />
       </span>
       <span className="meter-value">{percent(window.remaining)}</span>
+      <span className="meter-reset">{resetLabel}</span>
     </div>
   );
 }

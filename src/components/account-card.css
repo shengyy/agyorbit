@@ -45,7 +45,16 @@
   line-height: 17px;
 }
 
+.card-email-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 22px;
+}
+
 .card-email {
+  flex: 1;
+  min-width: 0;
   font-size: 11.5px;
   line-height: 15px;
   color: var(--text-2);
@@ -58,6 +67,7 @@
   font-size: 10.5px;
   font-weight: 600;
   line-height: 14px;
+  white-space: nowrap;
 }
 
 .tag-current {
@@ -71,16 +81,13 @@
 }
 
 .switch-btn {
-  /* Floats over the tags so the hidden button never squeezes the name. */
-  position: absolute;
-  top: 50%;
-  right: 32px;
-  transform: translateY(-50%);
+  flex: none;
   height: 22px;
   padding: 0 10px;
   border-radius: 999px;
   font-size: 11.5px;
   font-weight: 600;
+  white-space: nowrap;
   color: #fff;
   background: var(--accent);
   opacity: 0;
@@ -108,11 +115,6 @@
   display: flex;
   flex-direction: column;
   gap: 7px;
-}
-
-.card-hint {
-  font-size: 10.5px;
-  color: var(--text-3);
 }
 
 .card-notice {
