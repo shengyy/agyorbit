@@ -96,6 +96,8 @@ pub enum UpdateStep {
     Downloading,
     Verifying,
     Installing,
+    // Windows exits and relaunches through the NSIS installer.
+    #[cfg(not(target_os = "windows"))]
     Restarting,
 }
 
