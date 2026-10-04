@@ -2,8 +2,9 @@
 //!
 //! Switch order: mint a fresh token for the target first (nothing is touched
 //! if Google refuses), save the current sign-in back to its account, stop
-//! every Antigravity process, write the credential, verify it, relaunch. A
-//! failure after processes were stopped restores the previous credential.
+//! every Antigravity process, write the credential, verify it, relaunch. If
+//! writing or verifying fails, the previous credential is restored; once the
+//! new one is verified the switch stands even if the relaunch fails.
 
 use std::sync::Arc;
 
