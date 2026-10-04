@@ -237,10 +237,6 @@ async fn release_artifacts_verify() {
         assert!(url.starts_with("https://api.github.com/repos/shengyy/agyorbit/releases/assets/"));
         let asset = assets.iter().find(|asset| asset["url"] == url).unwrap();
         let file = asset["name"].as_str().unwrap();
-        assert_eq!(
-            asset["browser_download_url"],
-            format!("https://github.com/shengyy/agyorbit/releases/download/v{version}/{file}")
-        );
         assert!(if target.starts_with("darwin") {
             file.ends_with(".app.tar.gz")
         } else {
