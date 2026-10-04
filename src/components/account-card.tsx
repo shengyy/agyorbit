@@ -98,23 +98,25 @@ export function AccountCard({ account, active, best, disabled, onSwitch, onReaut
           <div className="card-name">
             <span className="truncate">{name}</span>
             <PlanBadge plan={account.plan} />
+            {active && <span className="tag tag-current">{t("account.current")}</span>}
+            {!active && best && <span className="tag tag-best">{t("account.best")}</span>}
           </div>
-          <div className="card-email truncate">{account.email}</div>
+          <div className="card-email-row">
+            <span className="card-email truncate">{account.email}</span>
+            {canSwitch && (
+              <button
+                type="button"
+                className="switch-btn"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onSwitch();
+                }}
+              >
+                {t("account.switch")}
+              </button>
+            )}
+          </div>
         </div>
-        {active && <span className="tag tag-current">{t("account.current")}</span>}
-        {!active && best && <span className="tag tag-best">{t("account.best")}</span>}
-        {canSwitch && (
-          <button
-            type="button"
-            className="switch-btn"
-            onClick={(event) => {
-              event.stopPropagation();
-              onSwitch();
-            }}
-          >
-            {t("account.switch")}
-          </button>
-        )}
         <button
           type="button"
           className="icon-btn card-more"
