@@ -26,6 +26,11 @@ verified.
 Each external fact these rely on, and the Antigravity version it was checked against, is listed in
 [antigravity-integration.md](antigravity-integration.md).
 
+## Verified with synthetic accounts
+
+- Account-card layout in Chrome on macOS, in English and Simplified Chinese, light and dark: tags and
+  the Switch button do not overlap, including long names and emails, hover and keyboard focus.
+
 ## Known limitations
 
 Accepted limitations are tracked as issues labeled
