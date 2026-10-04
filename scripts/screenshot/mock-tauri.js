@@ -35,6 +35,7 @@ const snapshot = {
   antigravity: { installed: true, running: true },
   refreshing: false,
   refreshedAt: at(-MIN),
+  update: { checking: false, available: null },
   accounts: [
     {
       id: "ada",

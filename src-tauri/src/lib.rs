@@ -18,6 +18,7 @@ mod switcher;
 mod system_tests;
 mod tokens;
 mod tray;
+mod updater;
 mod vault;
 
 use std::sync::Arc;
@@ -41,6 +42,7 @@ pub fn run() {
         .plugin(tauri_plugin_positioner::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             #[cfg(target_os = "macos")]
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
@@ -67,6 +69,8 @@ pub fn run() {
             commands::reveal_logs,
             commands::autostart_enabled,
             commands::set_autostart,
+            commands::check_update,
+            commands::install_update,
             commands::quit,
         ])
         .run(tauri::generate_context!())

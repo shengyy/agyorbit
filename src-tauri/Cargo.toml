@@ -37,6 +37,7 @@ memchr = "2"
 auto-launch = "0.6"
 sys-locale = "0.3"
 log = "0.4"
+tauri-plugin-updater = "2"
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_Security_Credentials", "Win32_System_Threading"] }

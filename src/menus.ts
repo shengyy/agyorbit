@@ -48,12 +48,21 @@ async function popup(entries: Entry[], at: LogicalPosition) {
   await menu.popup(at);
 }
 
-export async function showAppMenu(event: MouseEvent, version: string) {
+export async function showAppMenu(
+  event: MouseEvent,
+  version: string,
+  update: { checking: boolean; enabled: boolean; onCheck: () => void },
+) {
   const at = anchor(event);
   const launchAtLogin = await ipc.autostartEnabled().catch(() => false);
   await popup(
     [
       { text: `AgyOrbit ${version}`, enabled: false },
+      {
+        text: t(update.checking ? "update.checking" : "menu.checkUpdate"),
+        enabled: update.enabled && !update.checking,
+        action: update.onCheck,
+      },
       "separator",
       {
         text: t("menu.launchAtLogin"),

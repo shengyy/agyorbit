@@ -34,6 +34,10 @@ pub enum Error {
     AccountNotFound,
     #[error("another operation is in progress")]
     Busy,
+    #[error("app update failed: {0}")]
+    Update(#[from] tauri_plugin_updater::Error),
+    #[error("this update is no longer available; check again")]
+    UpdateUnavailable,
     #[error("the written credential did not read back as the target account")]
     VerifyFailed,
     #[error("I/O error: {0}")]
@@ -58,6 +62,8 @@ impl Error {
             Self::Launch(_) => "launch",
             Self::AccountNotFound => "account_not_found",
             Self::Busy => "busy",
+            Self::Update(_) => "update",
+            Self::UpdateUnavailable => "update_unavailable",
             Self::VerifyFailed => "verify_failed",
             Self::Io(_) => "io",
             Self::Invalid(_) => "invalid",

@@ -4,14 +4,14 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use crate::state::Orbit;
-use crate::{accounts, quota};
+use crate::{accounts, quota, updater};
 
 const INTERVAL: Duration = Duration::from_secs(5 * 60);
 
 pub fn start(orbit: Arc<Orbit>) {
     tauri::async_runtime::spawn(async move {
         loop {
-            tick(&orbit).await;
+            tokio::join!(tick(&orbit), updater::check_background(&orbit));
             tokio::time::sleep(INTERVAL).await;
         }
     });

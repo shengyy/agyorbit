@@ -55,6 +55,26 @@ export function ActivitySheet({ operation, accounts, onCancelAdd }: Props) {
     );
   }
 
+  if (operation.kind === "updating") {
+    const percent = operation.total
+      ? Math.min(100, Math.floor((operation.downloaded / operation.total) * 100))
+      : null;
+    return (
+      <Sheet>
+        <h2>{t("update.progressTitle")}</h2>
+        <div className="activity-line">
+          <span className="spinner" />
+          {t(`update.${operation.step}`)}
+          {operation.step === "downloading" && percent !== null && <span>{percent}%</span>}
+        </div>
+        {operation.step === "downloading" && (
+          <progress className="update-progress" max={100} value={percent ?? undefined} />
+        )}
+        <p className="sheet-note">{t("update.body")}</p>
+      </Sheet>
+    );
+  }
+
   return (
     <Sheet>
       <div className="activity-line">

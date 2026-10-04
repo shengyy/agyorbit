@@ -20,6 +20,20 @@ pub struct Snapshot {
     pub antigravity: AntigravityStatus,
     pub refreshing: bool,
     pub refreshed_at: Option<DateTime<Utc>>,
+    pub update: UpdateStatus,
+}
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateStatus {
+    pub checking: bool,
+    pub available: Option<UpdateInfo>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct UpdateInfo {
+    pub version: String,
+    pub notes: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -68,6 +82,20 @@ pub enum Operation {
         step: SwitchStep,
     },
     Stopping,
+    Restarting,
+    Updating {
+        step: UpdateStep,
+        downloaded: u64,
+        total: Option<u64>,
+    },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub enum UpdateStep {
+    Downloading,
+    Verifying,
+    Installing,
     Restarting,
 }
 

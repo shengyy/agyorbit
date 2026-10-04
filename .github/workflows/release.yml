@@ -70,14 +70,32 @@ jobs:
         with:
           workspaces: src-tauri
       - run: bun install --frozen-lockfile
+      - name: Release notes from the changelog
+        id: notes
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          python - <<'PYTHON'
+          import os, re, uuid
+          from pathlib import Path
+          changelog = Path("CHANGELOG.md").read_text(encoding="utf-8")
+          match = re.search(r"^## \[" + re.escape(os.environ["VERSION"]) + r"\].*\n(.*?)(?=^## \[|\Z)", changelog, re.M | re.S)
+          if not match or not match[1].strip():
+              raise SystemExit("Missing release notes in CHANGELOG.md")
+          delimiter = str(uuid.uuid4())
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"body<<{delimiter}\n{match[1].strip()}\n{delimiter}\n")
+          PYTHON
       - uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # action-v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         with:
           tauriScript: bun tauri
           args: ${{ matrix.args }}
           tagName: v${{ inputs.version }}
           releaseCommitish: ${{ github.sha }}
           releaseName: AgyOrbit ${{ inputs.version }}
-          releaseBody: "See [CHANGELOG.md](https://github.com/shengyy/agyorbit/blob/main/CHANGELOG.md) for what changed."
+          releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: true
+          updaterJsonPreferNsis: true

@@ -3,20 +3,24 @@ import "./sheet.css";
 
 interface Props {
   children: ReactNode;
+  className?: string;
   /** Escape and clicks on the backdrop call this; omit to make the sheet modal. */
   onDismiss?: () => void;
   onConfirm?: () => void;
 }
 
 /** A card that slides up over the panel for confirmations and progress. */
-export function Sheet({ children, onDismiss, onConfirm }: Props) {
+export function Sheet({ children, className = "", onDismiss, onConfirm }: Props) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && onDismiss) {
         event.stopPropagation();
         onDismiss();
       }
-      if (event.key === "Enter" && onConfirm) onConfirm();
+      if (event.key === "Enter" && onConfirm && !(event.target instanceof HTMLButtonElement)) {
+        event.preventDefault();
+        onConfirm();
+      }
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
@@ -31,7 +35,7 @@ export function Sheet({ children, onDismiss, onConfirm }: Props) {
         aria-label="Dismiss"
         onClick={onDismiss}
       />
-      <div className="sheet" role="dialog" aria-modal="true">
+      <div className={`sheet ${className}`} role="dialog" aria-modal="true">
         {children}
       </div>
     </div>
