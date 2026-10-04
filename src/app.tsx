@@ -94,7 +94,12 @@ export function App() {
             : { kind: "result", tone: "success", message: t("update.current") },
       );
     } catch (error) {
-      fail(error);
+      const { code, message } = asBackendError(error);
+      setDialog((current) =>
+        current?.kind === "checkingUpdate"
+          ? { kind: "result", tone: "error", message: errorText(code, message) }
+          : current,
+      );
     }
   };
   const askSwitch = async (account: Account) =>

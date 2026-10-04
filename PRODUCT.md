@@ -56,6 +56,15 @@ It is a switcher, not a client: Antigravity itself does all model work.
   ties.
 - A temporary error keeps the last good numbers instead of blanking them.
 
+### App updates
+
+- Check for new stable releases at startup and every 24 hours while running; the app menu can check
+  immediately. A failed background check stays quiet.
+- A new release appears as a small banner. The user can read its notes, update, or leave it for later.
+- Download and installation start only after confirmation, while no account or process operation is
+  running. The signed package and signed version must verify before installation.
+- Updating restarts AgyOrbit only, preserving accounts and settings. Antigravity keeps running.
+
 ## Non-goals
 
 - **No API, proxy or relay.** AgyOrbit never exposes accounts to other programs or forwards model

@@ -27,7 +27,9 @@ browser. The maintainer decides *when*; the agent does the rest.
 
    The `authorize` job refuses another branch, a version that differs from `Cargo.toml`, or one already
    released. The build makes a universal macOS `.dmg` and a Windows NSIS installer from `main`'s current
-   commit and attaches them to a draft release `vX.Y.Z`. Nothing is pushed from a local machine.
+   commit and attaches them to a draft release `vX.Y.Z`, together with updater packages, `.sig` files
+   and `latest.json`. Release notes come from that version's changelog section and are included in the
+   update manifest. Nothing is pushed from a local machine.
 3. **Check the draft.**
 
    ```bash
@@ -37,7 +39,14 @@ browser. The maintainer decides *when*; the agent does the rest.
 
    Mount the `.dmg` and confirm `codesign -dv` reports the identifier `io.github.shengyy.agyorbit`,
    `lipo -archs` lists `x86_64 arm64`, and `CFBundleShortVersionString` is `X.Y.Z`; the Windows
-   `-setup.exe` must be attached too.
+   `-setup.exe` must be attached too. Download `latest.json`, the `.app.tar.gz`, `-setup.exe` and their
+   `.sig` files into the same temporary directory. Verify the manifest points to this tag, both macOS
+   architectures use the universal package, Windows uses NSIS, and signatures verify with the shipped
+   public key and announced version:
+
+   ```bash
+   AGYORBIT_RELEASE_DIR=<tmp> cargo test --manifest-path src-tauri/Cargo.toml release_artifacts_verify -- --ignored
+   ```
 4. **Publish.** Write the release notes from the version's `CHANGELOG.md` section, then:
 
    ```bash
@@ -57,6 +66,19 @@ to the code identity, and the linker's default ad-hoc signature changes it on ev
 
 First-launch instructions for Gatekeeper and SmartScreen live in the [README](../README.md#install).
 
+## Updater signing
+
+Tauri's updater signature is separate from platform code signing. `bundle.createUpdaterArtifacts`
+enables it; `plugins.updater` owns the public key, version binding and HTTPS manifest endpoint.
+The official release action combines both matrix builds into `latest.json`, including `darwin-aarch64`
+and `darwin-x86_64` entries for the universal archive and `windows-x86_64` for NSIS.
+
+The stable private key is held outside the repository and in the GitHub Actions secret
+`TAURI_SIGNING_PRIVATE_KEY`. Keep a secure copy: losing or replacing this key prevents existing
+installations from verifying future updates. Never commit it or include it in logs. For a local
+signed build, set `TAURI_SIGNING_PRIVATE_KEY` to the private key file's path. Release builds sign the
+app version automatically; hand-signing must use `--app-version X.Y.Z`.
+
 ## Local build
 
 ```bash
@@ -64,6 +86,15 @@ bun install
 bun tauri build                 # host platform
 bun tauri build --target universal-apple-darwin   # needs both Apple targets: rustup target add x86_64-apple-darwin
 ```
+
+Verify a locally signed macOS package without launching it or touching your installed app:
+
+```bash
+AGYORBIT_UPDATE_PACKAGE=<bundle>/macos/AgyOrbit.app.tar.gz cargo test --manifest-path src-tauri/Cargo.toml local_signed_bundle_installs -- --ignored
+```
+
+The test downloads through loopback, verifies the real signature and version, replaces an isolated
+synthetic bundle, then checks its code signature and bundle version.
 
 Host-platform artifacts land in `src-tauri/target/release/bundle/`; builds with `--target` use
 `src-tauri/target/<target>/release/bundle/`.

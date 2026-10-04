@@ -47,6 +47,7 @@ const en = {
   "update.restarting": "Restarting AgyOrbit…",
   "error.update": "Couldn't update AgyOrbit. Check your connection and try again. See logs for details.",
   "error.update_unavailable": "This update is no longer available. Check for updates again.",
+  "error.update_not_installed": "Install AgyOrbit from the official installer before using app updates.",
 
   "footer.add": "Add account",
   "footer.restart": "Restart",
@@ -158,6 +159,7 @@ const zh: Record<Key, string> = {
   "update.restarting": "正在重启 AgyOrbit…",
   "error.update": "AgyOrbit 更新失败，请检查网络后重试。详细原因可在日志中查看。",
   "error.update_unavailable": "这个更新已不可用，请重新检查更新。",
+  "error.update_not_installed": "请先用官方安装包安装 AgyOrbit，再使用应用内更新。",
 
   "footer.add": "添加账号",
   "footer.restart": "重启",

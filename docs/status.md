@@ -31,6 +31,19 @@ Each external fact these rely on, and the Antigravity version it was checked aga
 - Account-card layout in Chrome on macOS, in English and Simplified Chinese, light and dark: tags and
   the Switch button do not overlap, including long names and emails, hover and keyboard focus.
 
+- Update sheets in Chrome on macOS, in both languages and appearances: long notes, an empty account
+  list, determinate and indeterminate download progress, Escape/Later dismissal, and exactly one
+  installation request after confirmation.
+- Official Tauri updater loopback tests: valid signatures, tampered payload rejection, signed-version
+  mismatch rejection, current/older release filtering and HTTP failures. The macOS installer replaces
+  an isolated synthetic bundle and leaves account data outside it intact; an invalid archive leaves
+  that bundle intact.
+- A locally built macOS archive signed with the production updater key: signature and signed version
+  verified through the official updater, installed into a temporary bundle, then code signature and
+  bundle version checked. No installed app was launched or replaced.
+- End-to-end updating of a running installed AgyOrbit and native Windows installation are **not
+  verified**. The isolated macOS test does not verify restart, login-item survival or Gatekeeper.
+
 ## Known limitations
 
 Accepted limitations are tracked as issues labeled

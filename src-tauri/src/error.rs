@@ -38,6 +38,8 @@ pub enum Error {
     Update(#[from] tauri_plugin_updater::Error),
     #[error("this update is no longer available; check again")]
     UpdateUnavailable,
+    #[error("app updates require an installed bundle; install AgyOrbit first")]
+    UpdateNotInstalled,
     #[error("the written credential did not read back as the target account")]
     VerifyFailed,
     #[error("I/O error: {0}")]
@@ -64,6 +66,7 @@ impl Error {
             Self::Busy => "busy",
             Self::Update(_) => "update",
             Self::UpdateUnavailable => "update_unavailable",
+            Self::UpdateNotInstalled => "update_not_installed",
             Self::VerifyFailed => "verify_failed",
             Self::Io(_) => "io",
             Self::Invalid(_) => "invalid",

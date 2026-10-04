@@ -13,7 +13,7 @@ snapshot, derives presentation data and requests operations through commands and
  tray click ─▶ shell (popover / window) ─▶ React UI
                                             │  invoke(command)        ▲ "agyorbit://snapshot"
                                             ▼                         │
-                                  commands.rs ─▶ accounts / switcher / quota / scheduler
+                                  commands.rs ─▶ accounts / switcher / quota / scheduler / updater
                                                          │
                      ┌───────────────────────────────────┼─────────────────────────────┐
                      ▼                                   ▼                             ▼
@@ -38,7 +38,8 @@ operations run in Rust; native menus, clipboard writes and URL opening use Tauri
 | `accounts.rs` | Browser sign-in, removal, adopting a sign-in made inside Antigravity |
 | `switcher.rs` | Switching accounts, stopping and restarting Antigravity |
 | `quota.rs` | Refreshing quota and plan for each account |
-| `scheduler.rs` | The 5-minute background pass |
+| `scheduler.rs` | The 5-minute background pass, including update checks when due |
+| `updater.rs` / `updater_tests.rs` | Signed app update checks, installation and loopback verification |
 | `autostart.rs` | Open at Login: SMAppService on macOS, the per-user Run key on Windows |
 | `registry.rs` | Account metadata in `accounts.json` (no secrets) |
 | `vault.rs` | Per-account refresh tokens in the credential store |
@@ -97,7 +98,7 @@ and waits for the main process. The processes that must exit and why are in
 ## Operations
 
 One operation runs at a time (`Orbit::begin` returns `Busy` otherwise): `adding`, `switching` (with its
-current step), `stopping`, `restarting`. The background pass skips while one is running.
+current step), `stopping`, `restarting`, `updating` (download, verification, installation, restart). The background pass skips while one is running.
 
 ### Switch sequence
 
@@ -108,6 +109,16 @@ current step), `stopping`, `restarting`. The background pass skips while one is 
 4. **Writing**: write keychain + fallback file, read back and verify. On failure restore the previous
    credential (or clear it if there was none) and relaunch.
 5. **Launching**: open Antigravity and wait for its main process.
+
+### App updates
+
+`updater.rs` owns the pending Tauri `Update`, check timing and check reservation inside `Orbit`.
+Snapshots expose only the version, notes and check state; the frontend never receives an installer
+URL, signature or updater resource. Read-only checks run alongside quota upkeep when due.
+Installation claims `Orbit::begin`, rejects an in-flight check or a changed confirmed version, and
+keeps the slot until failure or restart. Tauri downloads and verifies before installing; errors keep
+the offer available for retry. macOS explicitly restarts AgyOrbit after installation; the Windows
+NSIS updater handles exit and relaunch. The release contract is in [release.md](release.md).
 
 ### Adopting a sign-in made in the IDE
 

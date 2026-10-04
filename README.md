@@ -62,9 +62,14 @@ Antigravity must be installed. AgyOrbit reads its sign-in configuration from the
 Download the latest `.dmg` (macOS) or `-setup.exe` (Windows) from
 [Releases](https://github.com/shengyy/agyorbit/releases).
 
-Builds are not code-signed yet. On macOS, open the app once with right-click → **Open**, or run
+Builds have no Apple Developer ID or Windows code-signing certificate yet. On macOS, open the app once with right-click → **Open**, or run
 `xattr -dr com.apple.quarantine /Applications/AgyOrbit.app`. On Windows, choose **More info → Run
 anyway** in SmartScreen.
+
+AgyOrbit checks for updates at startup and daily. Click the update banner, or **⋯ → Check for
+Updates**, to read the release notes, then choose **Update & Restart**. Only AgyOrbit restarts;
+Antigravity keeps running. Accounts and settings are kept. If your version has no Check for Updates
+menu item, quit AgyOrbit and replace it with the latest installer once.
 
 To build from source, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -74,7 +79,7 @@ To build from source, see [CONTRIBUTING.md](CONTRIBUTING.md).
 2. **Add account** opens Google sign-in in your browser. Pick another account and allow access.
 3. Click an account (or its **Switch** button) and confirm. Antigravity restarts on that account.
 4. Right-click an account to sign in again, copy its email or remove it. The `⋯` menu at the top has
-   *Open at Login*, logs and Quit.
+   *Check for Updates*, *Open at Login*, logs and Quit.
 
 <p align="center">
   <picture>

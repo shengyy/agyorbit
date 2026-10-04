@@ -85,6 +85,7 @@ pub async fn check(orbit: &Arc<Orbit>, force: bool) -> Result<Option<UpdateInfo>
 }
 
 pub async fn install(orbit: &Arc<Orbit>, version: &str) -> Result<()> {
+    ensure_installed()?;
     let _guard = orbit.begin(progress(UpdateStep::Downloading, 0, None))?;
     let mut update = {
         let state = orbit.state();
@@ -136,3 +137,37 @@ fn progress(step: UpdateStep, downloaded: u64, total: Option<u64>) -> Operation 
         total,
     }
 }
+
+fn ensure_installed() -> Result<()> {
+    #[cfg(target_os = "macos")]
+    if is_macos_bundle(&tauri::utils::platform::current_exe()?) {
+        return Ok(());
+    }
+    #[cfg(target_os = "windows")]
+    if tauri::utils::platform::bundle_type() == Some(tauri::utils::config::BundleType::Nsis) {
+        return Ok(());
+    }
+    Err(Error::UpdateNotInstalled)
+}
+
+#[cfg(target_os = "macos")]
+fn is_macos_bundle(executable: &std::path::Path) -> bool {
+    let Some(macos) = executable.parent() else {
+        return false;
+    };
+    let Some(contents) = macos.parent() else {
+        return false;
+    };
+    let Some(bundle) = contents.parent() else {
+        return false;
+    };
+    macos.file_name().is_some_and(|name| name == "MacOS")
+        && contents.file_name().is_some_and(|name| name == "Contents")
+        && bundle
+            .extension()
+            .is_some_and(|extension| extension == "app")
+}
+
+#[cfg(test)]
+#[path = "updater_tests.rs"]
+mod tests;
