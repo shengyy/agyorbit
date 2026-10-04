@@ -6,6 +6,8 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-10-04
+
 ### Fixed
 
 - The Switch button no longer overlaps the Most left tag. Account tags follow the name and plan badge,
