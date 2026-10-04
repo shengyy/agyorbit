@@ -6,6 +6,15 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-10-04
+
+### Added
+
+- App updates: check at startup and daily, or from the app menu. View the release notes and confirm
+  before downloading a signed update and restarting AgyOrbit; Antigravity keeps running.
+- GitHub releases include signed updater packages and the update manifest for macOS and Windows.
+  Install this first updater-enabled release manually once; older versions cannot update themselves.
+
 ## [0.1.3] - 2026-10-04
 
 ### Fixed

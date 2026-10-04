@@ -18,6 +18,7 @@ use crate::model::{
 };
 use crate::registry::Registry;
 use crate::tokens::TokenCache;
+use crate::updater::UpdateState;
 use crate::vault;
 
 pub struct Orbit {
@@ -39,6 +40,7 @@ pub struct Inner {
     pub refreshed_at: Option<DateTime<Utc>>,
     pub install: Option<Install>,
     pub running: bool,
+    pub update: UpdateState,
 }
 
 /// Holds the single operation slot; dropping it returns AgyOrbit to idle.
@@ -79,6 +81,7 @@ impl Orbit {
                 refreshed_at: None,
                 install,
                 running,
+                update: UpdateState::default(),
             }),
             client: OnceCell::new(),
             op_lock: Arc::new(tokio::sync::Mutex::new(())),
@@ -127,6 +130,7 @@ impl Orbit {
             },
             refreshing: state.refreshing,
             refreshed_at: state.refreshed_at,
+            update: state.update.snapshot(),
         }
     }
 

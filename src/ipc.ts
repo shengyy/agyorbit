@@ -2,7 +2,7 @@
 
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
-import type { BackendError, RelatedProcess, Snapshot } from "./types";
+import type { BackendError, RelatedProcess, Snapshot, UpdateInfo } from "./types";
 
 export const ipc = {
   snapshot: () => invoke<Snapshot>("get_snapshot"),
@@ -18,6 +18,8 @@ export const ipc = {
   revealLogs: () => invoke<void>("reveal_logs"),
   autostartEnabled: () => invoke<boolean>("autostart_enabled"),
   setAutostart: (enabled: boolean) => invoke<void>("set_autostart", { enabled }),
+  checkUpdate: () => invoke<UpdateInfo | null>("check_update"),
+  installUpdate: (version: string) => invoke<void>("install_update", { version }),
   quit: () => invoke<void>("quit"),
 };
 

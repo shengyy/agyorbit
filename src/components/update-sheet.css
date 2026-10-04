@@ -1,0 +1,45 @@
+.update-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 10px 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--accent-fill);
+  color: var(--accent-text);
+  font-size: 11.5px;
+  text-align: left;
+}
+
+.update-banner-action {
+  white-space: nowrap;
+}
+
+.update-sheet {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+.update-notes {
+  max-height: min(170px, 30vh);
+  min-height: 0;
+  margin: 10px 0;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: var(--fill-1);
+  color: var(--text-2);
+  font-size: 12px;
+  line-height: 17px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow-y: auto;
+}
+
+.update-progress {
+  width: 100%;
+  height: 6px;
+  margin: 4px 0 10px;
+  accent-color: var(--accent);
+}

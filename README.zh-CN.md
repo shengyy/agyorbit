@@ -57,8 +57,12 @@
 
 从 [Releases](https://github.com/shengyy/agyorbit/releases) 下载最新的 `.dmg`（macOS）或 `-setup.exe`（Windows）。
 
-安装包暂未做代码签名。macOS 首次打开请右键 → **打开**，或执行
+安装包暂未使用 Apple Developer ID 或 Windows 代码签名证书。macOS 首次打开请右键 → **打开**，或执行
 `xattr -dr com.apple.quarantine /Applications/AgyOrbit.app`；Windows 在 SmartScreen 中选择 **更多信息 → 仍要运行**。
+
+AgyOrbit 在启动时和每天自动检查更新。点击新版提示，或选择 **⋯ → 检查更新**，查看更新内容后点
+**更新并重启**。只重启 AgyOrbit，Antigravity 继续运行，账号和设置会保留。如果旧版没有「检查更新」菜单，
+需要先退出 AgyOrbit，用最新安装包覆盖一次。
 
 从源码构建见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
@@ -67,7 +71,7 @@
 1. 启动 AgyOrbit 并点击图标，Antigravity 当前登录的账号会标为 **当前**。
 2. 点 **添加账号**，浏览器会打开 Google 登录页，选择另一个账号并允许访问。
 3. 点击某个账号（或它的 **切换** 按钮）并确认，Antigravity 会以该账号重新启动。
-4. 右键账号可重新授权、复制邮箱或移除；顶部 `⋯` 菜单里有开机启动、日志和退出。
+4. 右键账号可重新授权、复制邮箱或移除；顶部 `⋯` 菜单里有检查更新、开机启动、日志和退出。
 
 <p align="center">
   <picture>

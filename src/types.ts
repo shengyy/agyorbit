@@ -44,7 +44,18 @@ export type Operation =
   | { kind: "adding" }
   | { kind: "switching"; targetId: string; step: SwitchStep }
   | { kind: "stopping" }
-  | { kind: "restarting" };
+  | { kind: "restarting" }
+  | {
+      kind: "updating";
+      step: "downloading" | "verifying" | "installing" | "restarting";
+      downloaded: number;
+      total: number | null;
+    };
+
+export interface UpdateInfo {
+  version: string;
+  notes: string | null;
+}
 
 export interface Snapshot {
   platform: "macos" | "windows" | "linux";
@@ -55,6 +66,7 @@ export interface Snapshot {
   antigravity: { installed: boolean; running: boolean };
   refreshing: boolean;
   refreshedAt: string | null;
+  update: { checking: boolean; available: UpdateInfo | null };
 }
 
 export type ProcessKind = "app" | "helper" | "languageServer" | "cli";

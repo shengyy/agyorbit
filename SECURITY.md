@@ -21,10 +21,14 @@ The app data directory is `~/Library/Application Support/io.github.shengyy.agyor
 
 ## What is sent, and to whom
 
-Only Google endpoints: `accounts.google.com` and `oauth2.googleapis.com` (sign-in and token refresh),
+Google endpoints: `accounts.google.com` and `oauth2.googleapis.com` (sign-in and token refresh),
 `www.googleapis.com/oauth2/v2/userinfo` (name and photo), and `daily-cloudcode-pa.googleapis.com`
-(quota and plan). There is no AgyOrbit server, analytics or telemetry. Requests identify themselves as
-`AgyOrbit/<version> (antigravity)`.
+(quota and plan). Google requests identify themselves as `AgyOrbit/<version> (antigravity)`.
+
+App update checks fetch `latest.json` from this repository's latest GitHub Release over HTTPS.
+Confirmed downloads use GitHub's release asset hosting. Update requests carry no Google tokens or
+account information. Tauri verifies the package signature and its signed version against the public
+key shipped in the app before installation. There is no AgyOrbit server, analytics or telemetry.
 
 ## What AgyOrbit never does with secrets
 

@@ -28,6 +28,10 @@ What happens and when is defined in [PRODUCT.md](../PRODUCT.md); this is how it 
   half-way. Success lingers 1.6 s; errors stay until acknowledged.
 - While an account signs in, the surface shows a cancellable waiting sheet and comes back when Google
   redirects.
+- Updates appear in a compact banner under the header. Clicking opens the existing sheet style with
+  current and new versions, scrollable release notes, Later and Update & Restart. Downloads show real
+  progress, including an indeterminate bar when the server gives no size; verification and installation
+  have separate steps. The app menu also offers Check for Updates.
 - Account actions (sign in again, copy email, remove) live in a native context menu: right-click a card
   or use its `⋯` button. App actions live in the header's `⋯` menu.
 

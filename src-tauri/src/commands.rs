@@ -9,9 +9,9 @@ use tauri_plugin_opener::OpenerExt;
 
 use crate::antigravity::process::{self, RelatedProcess};
 use crate::error::{Error, Result};
-use crate::model::Snapshot;
+use crate::model::{Snapshot, UpdateInfo};
 use crate::state::Orbit;
-use crate::{accounts, autostart, quota, scheduler, shell, switcher};
+use crate::{accounts, autostart, quota, scheduler, shell, switcher, updater};
 
 type Shared<'a> = State<'a, Arc<Orbit>>;
 
@@ -93,6 +93,24 @@ pub fn autostart_enabled() -> Result<bool> {
 #[tauri::command]
 pub fn set_autostart(enabled: bool) -> Result<()> {
     autostart::set_enabled(enabled)
+}
+
+#[tauri::command]
+pub async fn check_update(orbit: Shared<'_>) -> Result<Option<UpdateInfo>> {
+    let result = updater::check(&orbit, true).await;
+    if let Err(err) = &result {
+        log::warn!("could not check for app updates: {err}");
+    }
+    result
+}
+
+#[tauri::command]
+pub async fn install_update(orbit: Shared<'_>, version: String) -> Result<()> {
+    let result = updater::install(&orbit, &version).await;
+    if let Err(err) = &result {
+        log::warn!("could not install app update: {err}");
+    }
+    result
 }
 
 #[tauri::command]
