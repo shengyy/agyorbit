@@ -5,8 +5,11 @@ Thanks for helping. This page is the human workflow; repository rules for coding
 
 ## Setup
 
-- [Rust](https://rustup.rs) via rustup. `rust-toolchain.toml` pins the version; rustup installs it on
-  first use.
+- Install [Rust](https://rustup.rs) once per user through rustup. The root
+  [`rust-toolchain.toml`](rust-toolchain.toml) registers this repository's version, components and
+  installation profile with that shared installation. Rustup reuses the toolchain across repositories.
+  Keep `CARGO_HOME` and `RUSTUP_HOME` at the workstation's user-level locations; do not create a separate
+  Rust installation or download cache inside this repository.
 - [Bun](https://bun.sh) for the frontend and the Tauri CLI.
 - macOS: Xcode Command Line Tools. Windows: the MSVC build tools and WebView2 (preinstalled on Windows
   10/11). See Tauri's [prerequisites](https://tauri.app/start/prerequisites/).
@@ -19,6 +22,24 @@ bun tauri dev
 
 The app appears in the menu bar (macOS) or the notification area (Windows). Running a second instance
 just reveals the first, which is handy for opening the popover from a terminal.
+
+### Rust caches
+
+The workstation owns global Rust installation and cache settings. Use Cargo's built-in
+[automatic global cache cleanup](https://doc.rust-lang.org/cargo/reference/config.html#global-caches)
+with its defaults. It tracks downloaded dependencies; it does not clean this project's build output.
+
+Keep `src-tauri/target/` between development and test runs so Cargo can reuse dependencies and
+incremental compilation. When a deliberate build-cache reset is needed, stop active builds and use
+the official [`cargo clean`](https://doc.rust-lang.org/cargo/commands/cargo-clean.html) command:
+
+```bash
+cargo clean --manifest-path src-tauri/Cargo.toml
+```
+
+This removes the build output and makes the next build cold. Run it on demand; build and deployment
+commands must preserve the cache. Local installer and updater-package retention is covered in
+[Local build](docs/release.md#local-build).
 
 ## Checks
 
