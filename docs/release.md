@@ -106,6 +106,14 @@ synthetic bundle, then checks its code signature and bundle version.
 Host-platform artifacts land in `src-tauri/target/release/bundle/`; builds with `--target` use
 `src-tauri/target/<target>/release/bundle/`.
 
+Published installers and updater packages are retained on GitHub Releases. Local bundle outputs and
+temporary release downloads are disposable verification artifacts: keep them through smoke, signature
+and installation checks, and through upload and verification of any requested delivery. Once those
+checks pass, remove the corresponding bundle directory and temporary downloads, including downloaded
+manifests, release metadata and signatures. Developer machines do not retain historical delivery
+packages. Keep the installed application, signing keys and Cargo build cache outside those output
+directories intact; [Rust cache maintenance](../CONTRIBUTING.md#rust-caches) has its own lifecycle.
+
 ## Website
 
 `site/` is the landing page at <https://shengyy.github.io/agyorbit/>. The `pages` workflow deploys it on
