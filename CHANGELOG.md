@@ -6,6 +6,11 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- The macOS popover no longer shows a square window outline around its rounded Liquid Glass corners,
+  especially in light appearance.
+
 ## [0.1.4] - 2026-10-04
 
 ### Added

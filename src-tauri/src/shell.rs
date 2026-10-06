@@ -41,7 +41,8 @@ pub fn create(app: &AppHandle) -> tauri::Result<WebviewWindow> {
             .always_on_top(true)
             .skip_taskbar(true)
             .visible(false)
-            .shadow(true)
+            // NSWindow's shadow adds a square frame outside the rounded glass view.
+            .shadow(false)
             .visible_on_all_workspaces(true)
             .accept_first_mouse(true)
             .effects(
