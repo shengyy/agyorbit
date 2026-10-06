@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (scene !== "confirm") return;
   // Open the switch confirmation as soon as the recommended card renders.
   const observer = new MutationObserver(() => {
-    const button = document.querySelector(".card:has(.tag-best) .switch-btn");
+    const button = document.querySelector(".card:has(.tag-best) .card-identity");
     if (button) {
       observer.disconnect();
       button.click();

@@ -83,7 +83,7 @@ export function AccountCard({ account, active, best, disabled, onSwitch, onReaut
   const canSwitch = !active && !disabled && account.quota.status !== "reauth";
   const classes = ["card", active && "card-active", canSwitch && "card-switchable"].filter(Boolean).join(" ");
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: the Switch button inside is the keyboard path.
+    // biome-ignore lint/a11y/useKeyWithClickEvents: the account identity button is the keyboard path.
     <article
       className={classes}
       onClick={canSwitch ? onSwitch : undefined}
@@ -93,30 +93,33 @@ export function AccountCard({ account, active, best, disabled, onSwitch, onReaut
       }}
     >
       <header className="card-head">
-        <Avatar id={account.id} label={name} picture={account.picture} />
-        <div className="card-id">
-          <div className="card-name">
+        <button
+          type="button"
+          className="card-identity"
+          aria-label={[
+            name,
+            account.plan?.kind.toUpperCase(),
+            active && t("account.current"),
+            !active && best && t("account.best"),
+            canSwitch ? t("account.switchTo", { email: account.email }) : account.email,
+          ]
+            .filter(Boolean)
+            .join(" · ")}
+          disabled={!canSwitch}
+          onClick={(event) => {
+            event.stopPropagation();
+            onSwitch();
+          }}
+        >
+          <Avatar id={account.id} label={name} picture={account.picture} />
+          <span className="card-name">
             <span className="truncate">{name}</span>
             <PlanBadge plan={account.plan} />
             {active && <span className="tag tag-current">{t("account.current")}</span>}
             {!active && best && <span className="tag tag-best">{t("account.best")}</span>}
-          </div>
-          <div className="card-email-row">
-            <span className="card-email truncate">{account.email}</span>
-            {canSwitch && (
-              <button
-                type="button"
-                className="switch-btn"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onSwitch();
-                }}
-              >
-                {t("account.switch")}
-              </button>
-            )}
-          </div>
-        </div>
+          </span>
+          <span className="card-email truncate">{account.email}</span>
+        </button>
         <button
           type="button"
           className="icon-btn card-more"

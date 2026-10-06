@@ -13,6 +13,11 @@ All notable changes to AgyOrbit are documented here. The format follows
 - Clip the macOS popover content inside its native Liquid Glass container, so page backgrounds and
   confirmation backdrops cannot draw rectangular corners outside the glass surface.
 
+### Changed
+
+- Remove the redundant Switch pill from account cards. Highlight the whole card on hover or keyboard
+  focus, retain keyboard activation and move More to the far right of the name and tags row.
+
 ## [0.1.5] - 2026-10-06
 
 ### Fixed
