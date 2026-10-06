@@ -10,7 +10,7 @@ checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
 name = "agyorbit"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "auto-launch",
  "base64 0.23.1",
@@ -18,6 +18,7 @@ dependencies = [
  "getrandom 0.4.3",
  "log",
  "memchr",
+ "objc2-app-kit",
  "reqwest",
  "serde",
  "serde_json",
@@ -36,6 +37,7 @@ dependencies = [
  "thiserror 2.0.21",
  "tokio",
  "url",
+ "window-vibrancy",
  "windows-sys 0.61.2",
 ]
 

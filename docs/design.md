@@ -10,8 +10,10 @@ confirmed click to switch.
 ## Surfaces
 
 - **macOS**: a popover under the menu bar icon, Liquid Glass background, no Dock icon. It resizes to its
-  content (up to 680 pt) and closes when focus leaves, like a menu. The system window shadow is disabled
-  so it does not draw a rectangular outline outside the glass corners. macOS 26 or later.
+  content (up to 680 pt) and closes when focus leaves, like a menu. The WebView lives inside the native
+  Liquid Glass container through `window-vibrancy`’s `content_view` API; that container clips all page
+  fills and confirmation backdrops to the same 18 pt corners. The extra system window shadow is
+  disabled. macOS 26 or later.
 - **Windows**: a compact window opened from the tray icon. Closing it keeps AgyOrbit in the tray.
 - Both run the same React UI; `platform-macos` / `platform-windows` on the root only change surface
   tokens and sizing.

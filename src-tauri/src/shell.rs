@@ -32,7 +32,6 @@ pub fn create(app: &AppHandle) -> tauri::Result<WebviewWindow> {
 
     #[cfg(target_os = "macos")]
     let builder = {
-        use tauri::window::{Effect, EffectState, EffectsBuilder};
         builder
             .inner_size(PANEL_WIDTH, 480.0)
             .resizable(false)
@@ -41,17 +40,10 @@ pub fn create(app: &AppHandle) -> tauri::Result<WebviewWindow> {
             .always_on_top(true)
             .skip_taskbar(true)
             .visible(false)
-            // NSWindow's shadow adds a square frame outside the rounded glass view.
+            // Liquid Glass supplies the surface edge; avoid a second window shadow.
             .shadow(false)
             .visible_on_all_workspaces(true)
             .accept_first_mouse(true)
-            .effects(
-                EffectsBuilder::new()
-                    .effect(Effect::LiquidGlassRegular)
-                    .state(EffectState::Active)
-                    .radius(18.0)
-                    .build(),
-            )
     };
 
     #[cfg(not(target_os = "macos"))]
@@ -61,7 +53,28 @@ pub fn create(app: &AppHandle) -> tauri::Result<WebviewWindow> {
         .center()
         .visible(!std::env::args().any(|arg| arg == BACKGROUND_ARG));
 
-    builder.build()
+    let window = builder.build()?;
+    #[cfg(target_os = "macos")]
+    {
+        let glass_window = window.clone();
+        let (sender, receiver) = std::sync::mpsc::sync_channel(1);
+        window.with_webview(move |webview| {
+            // Tauri supplies a live WKWebView (an NSView subclass) on the main thread.
+            let content = unsafe { &*webview.inner().cast::<objc2_app_kit::NSView>() };
+            let result = window_vibrancy::apply_liquid_glass(
+                &glass_window,
+                window_vibrancy::LiquidGlassOptions::default()
+                    .radius(18.0)
+                    .content_view(content),
+            );
+            let _ = sender.send(result);
+        })?;
+        receiver
+            .recv()
+            .map_err(std::io::Error::other)?
+            .map_err(std::io::Error::other)?;
+    }
+    Ok(window)
 }
 
 pub fn toggle(app: &AppHandle) {
