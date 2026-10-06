@@ -10,8 +10,10 @@ confirmed click to switch.
 ## Surfaces
 
 - **macOS**: a popover under the menu bar icon, Liquid Glass background, no Dock icon. It resizes to its
-  content (up to 680 pt) and closes when focus leaves, like a menu. The system window shadow is disabled
-  so it does not draw a rectangular outline outside the glass corners. macOS 26 or later.
+  content (up to 680 pt) and closes when focus leaves, like a menu. The WebView lives inside the native
+  Liquid Glass container through `window-vibrancy`’s `content_view` API; that container clips all page
+  fills and confirmation backdrops to the same 18 pt corners. The extra system window shadow is
+  disabled. macOS 26 or later.
 - **Windows**: a compact window opened from the tray icon. Closing it keeps AgyOrbit in the tray.
 - Both run the same React UI; `platform-macos` / `platform-windows` on the root only change surface
   tokens and sizing.
@@ -44,8 +46,10 @@ What happens and when is defined in [PRODUCT.md](../PRODUCT.md); this is how it 
 - One row per quota group (Gemini, Claude) with the 5-hour and weekly windows side by side, each a meter
   and the share remaining. Colour changes only when it matters: amber below 35 %, red below 10 %.
 - When a window is low, a footnote says when it recovers; hovering any meter shows its reset time.
-- The Switch button appears on hover or keyboard focus in reserved space beside the email, so it never
-  overlaps the name, plan or tags.
+- Clicking a switchable card opens the switch confirmation. Hover and keyboard focus highlight its
+  fill and border; the account identity is the keyboard activation target. More sits at the far right
+  of the name and tags row and appears on hover or focus. Long names and emails truncate within their
+  own column.
 
 ## Visual tokens
 

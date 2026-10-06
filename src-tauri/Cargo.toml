@@ -1,6 +1,6 @@
 [package]
 name = "agyorbit"
-version = "0.1.5"
+version = "0.1.6"
 description = "Menu bar / tray account switcher for Google Antigravity"
 authors = ["AgyOrbit contributors"]
 license = "MIT"
@@ -42,6 +42,10 @@ tauri-plugin-updater = "2.13"
 [dev-dependencies]
 tauri = { version = "2.12", features = ["test"] }
 tempfile = "3"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+window-vibrancy = "0.8"
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSView"] }
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_Security_Credentials", "Win32_System_Threading"] }

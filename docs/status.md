@@ -28,12 +28,16 @@ Each external fact these rely on, and the Antigravity version it was checked aga
 
 ## Verified with synthetic accounts
 
-- Native Tauri popover on macOS 27 in light and dark appearance: the account list and switch
-  confirmation keep their rounded Liquid Glass surface with the outer system window shadow disabled;
-  opening and cancelling the confirmation returns to the list.
+- Native Tauri popover on macOS 27 with the production window code: a solid red page background is
+  clipped at all four corners by the Liquid Glass content container. The account list and switch
+  confirmation are rounded in light and dark appearance; opening and cancelling the confirmation
+  returns to the list. Native content frames and the clipping radius stay aligned when the window
+  resizes.
 
-- Account-card layout in Chrome on macOS, in English and Simplified Chinese, light and dark: tags and
-  the Switch button do not overlap, including long names and emails, hover and keyboard focus.
+- Account-card layout in Chrome on macOS, in English and Simplified Chinese, light and dark: the account
+  identity, tags and More do not overlap, including long names and emails. Hover and
+  keyboard focus highlight switchable cards; identity activation opens the confirmation and Escape
+  returns focus to it.
 
 - Update sheets in Chrome on macOS, in both languages and appearances: long notes, an empty account
   list, determinate and indeterminate download progress, Escape/Later dismissal, and exactly one
