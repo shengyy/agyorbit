@@ -28,6 +28,10 @@ Each external fact these rely on, and the Antigravity version it was checked aga
 
 ## Verified with synthetic accounts
 
+- Native Tauri popover on macOS 27 in light and dark appearance: the account list and switch
+  confirmation keep their rounded Liquid Glass surface with the outer system window shadow disabled;
+  opening and cancelling the confirmation returns to the list.
+
 - Account-card layout in Chrome on macOS, in English and Simplified Chinese, light and dark: tags and
   the Switch button do not overlap, including long names and emails, hover and keyboard focus.
 

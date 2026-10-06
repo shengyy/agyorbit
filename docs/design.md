@@ -10,7 +10,8 @@ confirmed click to switch.
 ## Surfaces
 
 - **macOS**: a popover under the menu bar icon, Liquid Glass background, no Dock icon. It resizes to its
-  content (up to 680 pt) and closes when focus leaves, like a menu. macOS 26 or later.
+  content (up to 680 pt) and closes when focus leaves, like a menu. The system window shadow is disabled
+  so it does not draw a rectangular outline outside the glass corners. macOS 26 or later.
 - **Windows**: a compact window opened from the tray icon. Closing it keeps AgyOrbit in the tray.
 - Both run the same React UI; `platform-macos` / `platform-windows` on the root only change surface
   tokens and sizing.
