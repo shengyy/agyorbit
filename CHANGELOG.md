@@ -6,6 +6,11 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Clip the macOS popover content inside its native Liquid Glass container, so page backgrounds and
+  confirmation backdrops cannot draw rectangular corners outside the glass surface.
+
 ## [0.1.5] - 2026-10-06
 
 ### Fixed
