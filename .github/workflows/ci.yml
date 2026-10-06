@@ -38,6 +38,10 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
           workspaces: src-tauri
+          # Same key in CI and Release so PR checks can restore what main saved (OS/arch stay in the key).
+          shared-key: tauri
+          # PR runs restore the cache saved by main release builds and never save their own.
+          save-if: ${{ github.ref == 'refs/heads/main' }}
       - run: bun install --frozen-lockfile
       - name: Frontend checks
         run: bun run check
