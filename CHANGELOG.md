@@ -6,6 +6,8 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.7] - 2026-10-13
+
 ### Fixed
 
 - Refresh the subscription badge even when the quota request fails, so an expired subscription can
