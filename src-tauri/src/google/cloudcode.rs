@@ -247,4 +247,20 @@ mod tests {
                 .unwrap();
         assert_eq!(parse_plan(free).kind, PlanKind::Free);
     }
+
+    #[test]
+    fn parses_starter_paid_tier_as_free() {
+        let starter = serde_json::from_str(
+            r#"{"currentTier":{"id":"free-tier","name":"Antigravity"},
+                "paidTier":{"id":"free-tier","name":"Antigravity Starter Quota"}}"#,
+        )
+        .unwrap();
+        assert_eq!(
+            parse_plan(starter),
+            Plan {
+                kind: PlanKind::Free,
+                name: "Free".into(),
+            }
+        );
+    }
 }

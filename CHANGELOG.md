@@ -6,6 +6,11 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Refresh the subscription badge even when the quota request fails, so an expired subscription can
+  change from Pro to Free instead of keeping the previously saved plan.
+
 ## [0.1.6] - 2026-10-06
 
 ### Fixed

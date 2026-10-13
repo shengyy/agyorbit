@@ -26,6 +26,16 @@ verified.
 Each external fact these rely on, and the Antigravity version it was checked against, is listed in
 [antigravity-integration.md](antigravity-integration.md).
 
+## Subscription refresh verification
+
+- Read-only checks on macOS 27 with Antigravity 2.22.0: an expired Pro account's plan lookup reports
+  Free while its quota lookup returns 403; an active Ultra account still reports Ultra. Neither
+  response supplies a subscription expiry or renewal date. See the
+  [API contract](antigravity-integration.md#quota-and-plan).
+- Backend regression tests cover persisting the new Free plan despite quota failure, preserving
+  previous quota data on failure, independent plan failures, revoked authorization and account removal
+  during a refresh. The updated behavior in a running installed AgyOrbit is **not verified**.
+
 ## Verified with synthetic accounts
 
 - Native Tauri popover on macOS 27 with the production window code: a solid red page background is

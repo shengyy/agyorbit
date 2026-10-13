@@ -10,7 +10,7 @@ procedure is in [CONTRIBUTING.md](../CONTRIBUTING.md#verifying-against-a-real-an
 | Signed-in credential storage | 2.19.1, macOS 27 | `antigravity/live.rs` |
 | Credential bundle format | 2.19.1, macOS 27 | `antigravity/credential.rs` |
 | OAuth client and scopes | 2.19.1, macOS 27 | `antigravity/oauth_client.rs`, `google/oauth.rs` |
-| Quota and plan endpoints | 2.19.1, macOS 27 | `google/cloudcode.rs` |
+| Quota and plan endpoints | 2.19.1 and 2.22.0, macOS 27 | `google/cloudcode.rs` |
 | Processes that hold the credential | 2.19.1, macOS 27 | `antigravity/process.rs` |
 | Windows equivalents | **not verified** | same modules |
 
@@ -82,7 +82,15 @@ server as `--cloud_code_endpoint`). Both calls are `POST` with a bearer token.
   `Claude and GPT models`. The response is proto3 JSON, so a fraction of `0` is **omitted**: a bucket
   without `remainingFraction` is exhausted.
 - `:loadCodeAssist` with `{"metadata":{"ideType":"ANTIGRAVITY"}}` returns `paidTier` (`g1-pro-tier` /
-  "Google AI Pro", Ultra contains `ultra`) and `currentTier` (`free-tier` without a subscription).
+  "Google AI Pro", Ultra contains `ultra`) and `currentTier`. `currentTier` can be `free-tier` even
+  with a paid subscription, so `paidTier` takes precedence. `paidTier` can itself be `free-tier` /
+  "Antigravity Starter Quota"; the field's presence does not imply a paid subscription.
+- An account whose Pro subscription had expired returned HTTP 200 with `paidTier.id = free-tier`
+  from `:loadCodeAssist`, while `:retrieveUserQuotaSummary` returned HTTP 403. The two results must be
+  handled independently; a quota 403 alone does not identify the subscription tier.
+- The Free and active Ultra responses checked with 2.22.0 contained no subscription expiry or renewal
+  date. These calls provide the current tier and quota windows, not a billing end date; quota reset
+  times and OAuth token expiry are not subscription expiry dates.
 
 ## Processes
 
