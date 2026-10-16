@@ -45,7 +45,7 @@ operations run in Rust; native menus, clipboard writes and URL opening use Tauri
 | `vault.rs` | Per-account refresh tokens in the credential store |
 | `tokens.rs` | In-memory access tokens |
 | `secret_store/` | macOS Keychain / Windows Credential Manager primitives |
-| `antigravity/` | Install location, OAuth client discovery, credential format, live credential, processes |
+| `antigravity/` | Install location and version, OAuth client discovery, credential format, live credential, processes |
 | `google/` | OAuth (PKCE), loopback callback server, Cloud Code endpoints, User-Agent |
 | `shell.rs` / `tray.rs` | The popover or window, and the tray icon |
 | `error.rs` | Error codes the frontend localizes |
@@ -67,6 +67,15 @@ operations run in Rust; native menus, clipboard writes and URL opening use Tauri
 | `styles/` | Design tokens and base styles |
 
 ## Antigravity adapters
+
+### Installed version and request identity
+
+`antigravity/version.rs` reads the root `package.json` from the installed Electron `app.asar`, using
+bounded header and entry reads. `Install::version` exposes it without launching the app. Each
+quota/plan refresh creates a `google/cloudcode.rs` client with the current installed version and
+overrides the shared HTTP client's generic AgyOrbit identity on both requests. Unreadable metadata
+fails the lookup; the existing refresh error handling retains the last good quota and plan.
+The external identity contract is in [Quota and plan](antigravity-integration.md#quota-and-plan).
 
 ### Credential access
 

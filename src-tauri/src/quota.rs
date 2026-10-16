@@ -58,10 +58,8 @@ struct Refresh {
 pub async fn refresh_one(orbit: &Arc<Orbit>, account_id: &str) {
     let result = async {
         let token = orbit.access_token(account_id).await?;
-        let (groups, plan) = tokio::join!(
-            cloudcode::quota(&orbit.http, &token),
-            cloudcode::plan(&orbit.http, &token)
-        );
+        let cloudcode = cloudcode::Client::new(&orbit.http, &orbit.install()?)?;
+        let (groups, plan) = tokio::join!(cloudcode.quota(&token), cloudcode.plan(&token));
         Ok(Refresh { groups, plan })
     }
     .await;

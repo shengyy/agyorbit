@@ -3,6 +3,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
+use crate::antigravity::install::Install;
 use crate::error::{Error, Result};
 
 /// The endpoint Antigravity 2.19.1 passes to its language server
@@ -79,38 +80,70 @@ struct RawBucket {
     reset_time: Option<DateTime<Utc>>,
 }
 
-async fn post<T: for<'de> Deserialize<'de>>(
-    http: &reqwest::Client,
-    access_token: &str,
-    method: &'static str,
-    body: serde_json::Value,
-) -> Result<T> {
-    let response = http
-        .post(format!("{BASE}:{method}"))
-        .bearer_auth(access_token)
-        .json(&body)
-        .send()
-        .await?;
-    let status = response.status();
-    if !status.is_success() {
-        return Err(Error::Http {
-            endpoint: method,
-            status: status.as_u16(),
-        });
-    }
-    Ok(response.json().await?)
+/// A per-refresh client: follows the installed product version without
+/// pinning a vendor version or letting a generic HTTP identity lose pools.
+pub struct Client<'a> {
+    http: &'a reqwest::Client,
+    user_agent: String,
+    base: &'a str,
 }
 
-/// The 5-hour and weekly buckets of every model group.
-pub async fn quota(http: &reqwest::Client, access_token: &str) -> Result<Vec<QuotaGroup>> {
-    let summary: SummaryResponse = post(
-        http,
-        access_token,
-        "retrieveUserQuotaSummary",
-        serde_json::json!({}),
-    )
-    .await?;
-    Ok(summary.groups.into_iter().map(parse_group).collect())
+impl<'a> Client<'a> {
+    pub fn new(http: &'a reqwest::Client, install: &Install) -> Result<Self> {
+        Ok(Self {
+            http,
+            user_agent: format!("{} (antigravity/{})", super::USER_AGENT, install.version()?),
+            base: BASE,
+        })
+    }
+
+    async fn post<T: for<'de> Deserialize<'de>>(
+        &self,
+        access_token: &str,
+        method: &'static str,
+        body: serde_json::Value,
+    ) -> Result<T> {
+        let response = self
+            .http
+            .post(format!("{}:{method}", self.base))
+            .header(reqwest::header::USER_AGENT, &self.user_agent)
+            .bearer_auth(access_token)
+            .json(&body)
+            .send()
+            .await?;
+        let status = response.status();
+        if !status.is_success() {
+            return Err(Error::Http {
+                endpoint: method,
+                status: status.as_u16(),
+            });
+        }
+        Ok(response.json().await?)
+    }
+
+    /// The 5-hour and weekly buckets of every model group.
+    pub async fn quota(&self, access_token: &str) -> Result<Vec<QuotaGroup>> {
+        let summary: SummaryResponse = self
+            .post(
+                access_token,
+                "retrieveUserQuotaSummary",
+                serde_json::json!({}),
+            )
+            .await?;
+        Ok(summary.groups.into_iter().map(parse_group).collect())
+    }
+
+    /// The Google AI subscription behind the account.
+    pub async fn plan(&self, access_token: &str) -> Result<Plan> {
+        let load: LoadResponse = self
+            .post(
+                access_token,
+                "loadCodeAssist",
+                serde_json::json!({ "metadata": { "ideType": "ANTIGRAVITY" } }),
+            )
+            .await?;
+        Ok(parse_plan(load))
+    }
 }
 
 fn parse_group(group: RawGroup) -> QuotaGroup {
@@ -174,18 +207,6 @@ struct Tier {
     name: String,
 }
 
-/// The Google AI subscription behind the account.
-pub async fn plan(http: &reqwest::Client, access_token: &str) -> Result<Plan> {
-    let load: LoadResponse = post(
-        http,
-        access_token,
-        "loadCodeAssist",
-        serde_json::json!({ "metadata": { "ideType": "ANTIGRAVITY" } }),
-    )
-    .await?;
-    Ok(parse_plan(load))
-}
-
 fn parse_plan(load: LoadResponse) -> Plan {
     match load.paid_tier.or(load.current_tier) {
         Some(tier) if tier.id.contains("ultra") => Plan {
@@ -206,6 +227,114 @@ fn parse_plan(load: LoadResponse) -> Plan {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
+    use tokio::net::TcpListener;
+
+    #[tokio::test]
+    async fn sends_installed_version_and_refreshes_it_after_an_upgrade() {
+        let dir = tempfile::tempdir().unwrap();
+        let install = Install {
+            root: dir.path().into(),
+            main_exe: dir.path().join("Antigravity"),
+            bin_dir: dir.path().join("bin"),
+        };
+        let http = reqwest::Client::builder()
+            .user_agent(super::super::USER_AGENT)
+            .no_proxy()
+            .timeout(std::time::Duration::from_secs(5))
+            .build()
+            .unwrap();
+        for version in ["2.23.1", "2.24.0"] {
+            let package = serde_json::json!({"version": version}).to_string();
+            let header = serde_json::json!({"files": {"package.json": {
+                "offset": "0", "size": package.len()
+            }}})
+            .to_string();
+            let padded = (header.len() + 3) & !3;
+            let size = (8 + padded) as u32;
+            let mut archive = Vec::new();
+            for word in [4, size, size - 4, header.len() as u32] {
+                archive.extend(word.to_le_bytes());
+            }
+            archive.extend(header.as_bytes());
+            archive.resize(8 + size as usize, 0);
+            archive.extend(package.as_bytes());
+            std::fs::write(dir.path().join("app.asar"), archive).unwrap();
+
+            let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+            let base = format!("http://{}/v1internal", listener.local_addr().unwrap());
+            let mut client = Client::new(&http, &install).unwrap();
+            client.base = &base;
+            let server = tokio::spawn(async move {
+                for method in ["retrieveUserQuotaSummary", "loadCodeAssist"] {
+                    let (mut stream, _) = listener.accept().await.unwrap();
+                    let mut request = Vec::new();
+                    let mut byte = [0];
+                    while !request.ends_with(b"\r\n\r\n") {
+                        stream.read_exact(&mut byte).await.unwrap();
+                        request.push(byte[0]);
+                        assert!(request.len() < 8192);
+                    }
+                    let request = String::from_utf8(request).unwrap();
+                    assert!(request.starts_with(&format!("POST /v1internal:{method} ")));
+                    let length: usize = request
+                        .lines()
+                        .find_map(|line| {
+                            let (name, value) = line.split_once(':')?;
+                            name.eq_ignore_ascii_case("content-length")
+                                .then(|| value.trim().parse().unwrap())
+                        })
+                        .unwrap();
+                    let mut body = vec![0; length];
+                    stream.read_exact(&mut body).await.unwrap();
+                    let body: serde_json::Value = serde_json::from_slice(&body).unwrap();
+                    assert_eq!(
+                        body,
+                        if method == "retrieveUserQuotaSummary" {
+                            serde_json::json!({})
+                        } else {
+                            serde_json::json!({"metadata":{"ideType":"ANTIGRAVITY"}})
+                        }
+                    );
+                    let ua = request
+                        .lines()
+                        .find_map(|line| {
+                            let (name, value) = line.split_once(':')?;
+                            name.eq_ignore_ascii_case("user-agent")
+                                .then(|| value.trim())
+                        })
+                        .unwrap();
+                    assert!(ua.starts_with("AgyOrbit/"));
+                    // The upstream gate returns HTTP 200 with only Claude if
+                    // the vendor product/version token is missing or stale.
+                    let groups = if ua.contains(&format!("antigravity/{version}")) {
+                        serde_json::json!([{"displayName":"Gemini Models"}, {"displayName":"Claude and GPT models"}])
+                    } else {
+                        serde_json::json!([{"displayName":"Claude and GPT models"}])
+                    };
+                    let body = if method == "retrieveUserQuotaSummary" {
+                        serde_json::json!({"groups": groups})
+                    } else {
+                        assert!(ua.contains(&format!("antigravity/{version}")));
+                        serde_json::json!({"paidTier":{"id":"g1-pro-tier","name":"Google AI Pro"}})
+                    }
+                    .to_string();
+                    stream.write_all(format!(
+                        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len()
+                    ).as_bytes()).await.unwrap();
+                }
+            });
+            let groups = client.quota("synthetic-token").await.unwrap();
+            assert_eq!(groups.len(), 2);
+            assert_eq!(groups[0].key, GroupKey::Gemini);
+            assert_eq!(groups[1].key, GroupKey::Claude);
+            assert_eq!(
+                client.plan("synthetic-token").await.unwrap().kind,
+                PlanKind::Pro
+            );
+            server.await.unwrap();
+        }
+    }
 
     #[test]
     fn parses_quota_summary() {

@@ -10,7 +10,8 @@ procedure is in [CONTRIBUTING.md](../CONTRIBUTING.md#verifying-against-a-real-an
 | Signed-in credential storage | 2.19.1, macOS 27 | `antigravity/live.rs` |
 | Credential bundle format | 2.19.1, macOS 27 | `antigravity/credential.rs` |
 | OAuth client and scopes | 2.19.1, macOS 27 | `antigravity/oauth_client.rs`, `google/oauth.rs` |
-| Quota and plan endpoints | 2.19.1 and 2.22.0, macOS 27 | `google/cloudcode.rs` |
+| Installed app version metadata | 2.23.1, macOS 27 | `antigravity/version.rs` |
+| Quota and plan endpoints | 2.19.1, 2.22.0 and 2.23.1, macOS 27 | `google/cloudcode.rs` |
 | Processes that hold the credential | 2.19.1, macOS 27 | `antigravity/process.rs` |
 | Windows equivalents | **not verified** | same modules |
 
@@ -74,13 +75,20 @@ Facts the browser sign-in depends on:
 Base URL: `https://daily-cloudcode-pa.googleapis.com/v1internal` (what Antigravity passes to its language
 server as `--cloud_code_endpoint`). Both calls are `POST` with a bearer token.
 
-- **The `User-Agent` must contain `antigravity`.** Without it the API answers 403 "You do not have a valid
-  license of this product". AgyOrbit sends `AgyOrbit/<version> (antigravity)`.
+- **The `User-Agent` must include the installed Antigravity product/version token.** AgyOrbit sends
+  `AgyOrbit/<version> (antigravity/<installed-version>)`. Read-only checks with 2.23.1 showed that
+  `AgyOrbit/<version> (antigravity)` receives HTTP 200 with only Claude/GPT; including `antigravity/2.23.1`
+  restores Gemini and matches the official app's freshly fetched quota summary. An unversioned token
+  or using AgyOrbit's own version as the Antigravity version also omitted Gemini. Without an
+  Antigravity identity, the API can answer 403 "You do not have a valid license of this product".
 - `:retrieveUserQuotaSummary` with `{}` returns `groups[]`, each with `displayName`, a `description` that
   lists the models (`Models within this group: Claude Opus, Claude Sonnet, GPT-OSS`) and `buckets[]` with
   `window` (`5h` or `weekly`), `remainingFraction` and `resetTime`. Observed groups: `Gemini Models` and
   `Claude and GPT models`. The response is proto3 JSON, so a fraction of `0` is **omitted**: a bucket
   without `remainingFraction` is exhausted.
+- The versioned identity returned both groups for six Pro accounts and one Ultra account with
+  2.23.1. These responses and the official app's fresh summary did not expose a separate Gemini 4
+  Argon group; its independent quota contract is **not verified**.
 - `:loadCodeAssist` with `{"metadata":{"ideType":"ANTIGRAVITY"}}` returns `paidTier` (`g1-pro-tier` /
   "Google AI Pro", Ultra contains `ultra`) and `currentTier`. `currentTier` can be `free-tier` even
   with a paid subscription, so `paidTier` takes precedence. `paidTier` can itself be `free-tier` /
@@ -91,6 +99,14 @@ server as `--cloud_code_endpoint`). Both calls are `POST` with a bearer token.
 - The Free and active Ultra responses checked with 2.22.0 contained no subscription expiry or renewal
   date. These calls provide the current tier and quota windows, not a billing end date; quota reset
   times and OAuth token expiry are not subscription expiry dates.
+
+### Installed app version
+
+The Electron package stores its version in the root `package.json` inside `Resources/app.asar`
+on macOS. It matched the bundle's `CFBundleShortVersionString` on 2.23.1. AgyOrbit reads only that
+entry, without launching Antigravity, and refreshes the identity for each quota/plan pass. If the
+version cannot be read, the lookup fails instead of sending an identity known to omit pools.
+The corresponding Windows `resources/app.asar` layout is **not verified** on a real installation.
 
 ## Processes
 

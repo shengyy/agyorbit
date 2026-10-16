@@ -36,6 +36,18 @@ Each external fact these rely on, and the Antigravity version it was checked aga
   previous quota data on failure, independent plan failures, revoked authorization and account removal
   during a refresh. The updated behavior in a running installed AgyOrbit is **not verified**.
 
+## Quota request identity verification
+
+- Read-only checks on macOS 27 with Antigravity 2.23.1 reproduced HTTP 200 responses missing Gemini
+  with the unversioned product identity. The installed-version identity returned Gemini and
+  Claude/GPT for six Pro accounts and one Ultra account. The active account's groups and weekly
+  values matched the official app's freshly fetched summary. No separate Gemini 4 Argon group was
+  returned; see the [API contract](antigravity-integration.md#quota-and-plan).
+- Regression tests cover reading the installed version, invalid package metadata, the HTTP identity
+  on both quota and plan requests, and an Antigravity upgrade between refreshes. The real installation
+  system test now rejects a successful summary that omits Gemini. The fix in a running installed
+  AgyOrbit and native Windows version discovery are **not verified**.
+
 ## Verified with synthetic accounts
 
 - Native Tauri popover on macOS 27 with the production window code: a solid red page background is

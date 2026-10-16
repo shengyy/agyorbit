@@ -5,3 +5,4 @@ pub mod install;
 pub mod live;
 pub mod oauth_client;
 pub mod process;
+mod version;

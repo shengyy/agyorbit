@@ -27,7 +27,10 @@ fn mask(email: &str) -> String {
 #[ignore = "needs a local Antigravity installation"]
 async fn reads_installation_sign_in_and_quota() {
     let install = Install::locate().expect("Antigravity installation");
-    println!("install: {}", install.root.display());
+    println!(
+        "Antigravity version: {}",
+        install.version().expect("installed version")
+    );
     println!("processes: {:?}", process::scan(Some(&install)));
 
     let http = http();
@@ -56,9 +59,8 @@ async fn reads_installation_sign_in_and_quota() {
         assert_eq!(claims.sub, bundle.claims().unwrap().sub);
     }
 
-    let groups = cloudcode::quota(&http, &grant.access_token)
-        .await
-        .expect("quota");
+    let cloudcode = cloudcode::Client::new(&http, &install).expect("Cloud Code identity");
+    let groups = cloudcode.quota(&grant.access_token).await.expect("quota");
     for group in &groups {
         let pct =
             |w: &Option<cloudcode::QuotaWindow>| w.as_ref().map(|w| (w.remaining * 100.0).round());
@@ -70,10 +72,14 @@ async fn reads_installation_sign_in_and_quota() {
         );
     }
     assert!(!groups.is_empty());
+    assert!(
+        groups
+            .iter()
+            .any(|group| group.key == cloudcode::GroupKey::Gemini),
+        "quota summary omitted Gemini; verify the installed product identity"
+    );
     println!(
         "plan: {:?}",
-        cloudcode::plan(&http, &grant.access_token)
-            .await
-            .expect("plan")
+        cloudcode.plan(&grant.access_token).await.expect("plan")
     );
 }

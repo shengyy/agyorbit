@@ -24,6 +24,11 @@ impl Install {
         path.starts_with(&self.root)
     }
 
+    /// The version packaged with this installation, read again after app updates.
+    pub fn version(&self) -> crate::error::Result<String> {
+        super::version::read(&self.bin_dir.with_file_name("app.asar"))
+    }
+
     fn at(root: PathBuf) -> Option<Install> {
         let (main_exe, bin_dir) = layout(&root);
         main_exe.is_file().then_some(Install {

@@ -23,7 +23,8 @@ The app data directory is `~/Library/Application Support/io.github.shengyy.agyor
 
 Google endpoints: `accounts.google.com` and `oauth2.googleapis.com` (sign-in and token refresh),
 `www.googleapis.com/oauth2/v2/userinfo` (name and photo), and `daily-cloudcode-pa.googleapis.com`
-(quota and plan). Google requests identify themselves as `AgyOrbit/<version> (antigravity)`.
+(quota and plan). Google requests identify themselves as `AgyOrbit/<version>`; Cloud Code requests
+also include the installed `antigravity/<installed-version>` product token.
 
 App update checks fetch `latest.json` from this repository's latest GitHub Release over HTTPS.
 Confirmed downloads use GitHub's release asset hosting. Update requests carry no Google tokens or

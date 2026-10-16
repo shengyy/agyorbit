@@ -6,6 +6,11 @@ All notable changes to AgyOrbit are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Restore missing Gemini quotas by sending the installed Antigravity version in Cloud Code requests.
+  Read the version again on refresh so Antigravity updates do not leave a stale request identity.
+
 ## [0.1.7] - 2026-10-13
 
 ### Fixed
