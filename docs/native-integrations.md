@@ -49,7 +49,9 @@ Claude Code 2.1.310 and Claude Desktop 3.6556.2 (`com.anthropic.claudefordesktop
   account atoms and remote memberships are excluded. Both the state file and `.bak` are atomically
   replaced and read back within the credential rollback transaction. Unsupported data and linked
   files fail closed. **Restart** applies the same recovery without rewriting credentials.
-  End-to-end visibility after a real restart/switch remains **not verified**.
+  Recovery writes and project-list visibility after an authorized client restart were verified on
+  macOS with desktop 26.1103.41825, with unchanged credential-file bytes. Account-to-account switching
+  and the OrbitSwitch **Restart** button remain **not verified**.
 
 ## Claude Code
 

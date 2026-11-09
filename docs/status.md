@@ -42,7 +42,10 @@ Update this page in the same PR whenever verification scope changes.
   - Read-only inspection verified account-scoped local-project and chat-membership storage in the
     installed desktop. The recovery planner successfully combined saved-account projects and
     memberships in memory without writing native state or credentials or stopping processes.
-  - Real restart/switch visibility after writing the recovery plan remains **not verified**.
+  - An authorized client stop/relaunch using the native Rust recovery path restored local projects
+    and chat memberships. Native-state readback and the desktop's project-list API confirmed the
+    recovered projects; credential-file bytes were unchanged.
+  - Account-to-account switching and the OrbitSwitch **Restart** button remain **not verified**.
 
 ## Synthetic and loopback verification
 

@@ -6,6 +6,8 @@ All notable changes to OrbitSwitch are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-11-09
+
 ### Fixed
 
 - Keep Codex's native local projects and their chat memberships available when switching saved
