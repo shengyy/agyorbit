@@ -38,7 +38,7 @@ Update this page in the same PR whenever verification scope changes.
     matched the CLI account and active organization.
   - End-to-end Codex/Claude account switching, process shutdown/relaunch, token renewal and isolated
     browser enrollment remain **not verified**.
-- **Codex local-project recovery** (desktop 26.1103.41825, macOS):
+- **Codex local-project recovery** (desktop 26.1103.41825, macOS 27.0.1):
   - Read-only inspection verified account-scoped local-project and chat-membership storage in the
     installed desktop. The recovery planner successfully combined saved-account projects and
     memberships in memory without writing native state or credentials or stopping processes.

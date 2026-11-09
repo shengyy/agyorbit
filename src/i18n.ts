@@ -26,7 +26,7 @@ const en = {
     "Sign in to the same account in Claude Desktop and Claude Code, then import current.",
   "error.live_token_expired": "Open the official client to renew this active account, then refresh.",
   "error.rollback_failed":
-    "Restoring the original sign-in failed. Keep clients closed and sign in again with the official client.",
+    "Couldn't fully restore the original client state. Keep the client closed and check the logs before recovery.",
 
   "header.updated": "Updated {ago}",
   "header.refreshing": "Refreshing…",
@@ -169,7 +169,7 @@ const zh: Record<Key, string> = {
   "error.subscription_login_required": "请先在官方客户端登录订阅账号，再导入。",
   "error.desktop_sign_in_required": "请在 Claude Desktop 和 Claude Code 中登录同一账号，再导入当前账号。",
   "error.live_token_expired": "请打开官方客户端更新当前账号的登录信息，再刷新额度。",
-  "error.rollback_failed": "恢复原登录信息失败，请保持客户端关闭，并通过官方客户端重新登录。",
+  "error.rollback_failed": "未能完整恢复客户端原状态，请保持客户端关闭，查看日志后再恢复。",
 
   "header.updated": "{ago}更新",
   "header.refreshing": "正在刷新…",
