@@ -1,5 +1,6 @@
 //! Shared orchestration for Codex and Claude; credentials never enter snapshots.
 pub mod api;
+mod codex_projects;
 pub mod desktop;
 pub mod install;
 pub mod live;
@@ -44,6 +45,28 @@ impl Session {
 }
 fn load(id: &str) -> Result<Session> {
     serde_json::from_str(&storage::get(id)?.ok_or(Error::AccountNotFound)?).map_err(Error::from)
+}
+fn prepare_projects(
+    orbit: &Orbit,
+    provider: Provider,
+    location: &live::Location,
+    target_id: &str,
+    current_id: Option<&str>,
+    desktop_installed: bool,
+) -> Result<Option<codex_projects::Update>> {
+    if provider != Provider::Codex || !desktop_installed {
+        return Ok(None);
+    }
+    let mut ids: Vec<_> = orbit
+        .state()
+        .registry
+        .accounts()
+        .iter()
+        .filter(|account| account.provider == Provider::Codex)
+        .map(|account| account.id.clone())
+        .collect();
+    ids.extend(current_id.map(str::to_owned));
+    codex_projects::prepare(&location.root, target_id, &ids)
 }
 fn fingerprint(value: &Value) -> String {
     registry::fingerprint(&value.to_string())
@@ -455,10 +478,18 @@ pub async fn switch(orbit: &Arc<Orbit>, provider: Provider, id: &str) -> Result<
                     .save(&old_id)?;
             }
         }
-        Ok((backup, previous_desktop))
+        let projects = prepare_projects(
+            orbit,
+            provider,
+            &location,
+            id,
+            current_id.as_deref(),
+            install.app.is_some(),
+        )?;
+        Ok((backup, previous_desktop, projects))
     }
     .await;
-    let (backup, previous_desktop) = match prepared {
+    let (backup, previous_desktop, projects) = match prepared {
         Ok(value) => value,
         Err(error) => {
             if was_running {
@@ -481,6 +512,9 @@ pub async fn switch(orbit: &Arc<Orbit>, provider: Provider, id: &str) -> Result<
             if api::identity(provider, &written, &target.profile)? != target.identity(provider)? {
                 return Err(Error::VerifyFailed);
             }
+            if let Some(projects) = &projects {
+                projects.apply()?;
+            }
             target.save(id)?;
             orbit.update(|s| {
                 s.registry
@@ -492,7 +526,11 @@ pub async fn switch(orbit: &Arc<Orbit>, provider: Provider, id: &str) -> Result<
             // Attempt both restorations even when one fails. Do not launch on a partial rollback.
             let cli = backup.restore();
             let desktop = previous_desktop.as_ref().map(desktop::apply).transpose();
-            cli.and(desktop.map(|_| ()))
+            let projects = projects
+                .as_ref()
+                .map(codex_projects::Update::restore)
+                .transpose();
+            cli.and(desktop.map(|_| ())).and(projects.map(|_| ()))
         },
     );
     if let Err(error) = result {
@@ -521,8 +559,31 @@ pub async fn control(orbit: &Arc<Orbit>, provider: Provider, restart: bool) -> R
     })?;
     let _sync = orbit.sync_lock.lock().await;
     let install = install::locate(provider);
+    let was_running = process::is_running(provider, &install);
     process::stop(provider, &install).await?;
     let result = if restart {
+        let repair = (|| {
+            if provider == Provider::Codex && install.app.is_some() {
+                let location = live::locate(provider)?;
+                location.check_switch_configuration(true)?;
+                if let Some(credential) = location.read()? {
+                    let (user, account, _, _) = api::identity(provider, &credential, &Value::Null)?;
+                    let id = format!("codex:{user}:{account}");
+                    if let Some(projects) =
+                        prepare_projects(orbit, provider, &location, &id, Some(&id), true)?
+                    {
+                        transaction::apply(|| projects.apply(), || projects.restore())?;
+                    }
+                }
+            }
+            Ok(())
+        })();
+        if let Err(error) = repair {
+            if was_running && !matches!(error, Error::RollbackFailed) {
+                let _ = process::launch(&install).await;
+            }
+            return Err(error);
+        }
         process::launch(&install).await
     } else {
         Ok(())

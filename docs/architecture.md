@@ -98,12 +98,17 @@ failure. A default-browser launch failure keeps the copy action available.
    any paired Claude Desktop session.
 2. **Closing**: send `SIGTERM` / `taskkill` to recognized client processes and wait up to 8 s without
    force-killing.
-3. Capture outgoing CLI and Claude Desktop state for rollback and save updated outgoing credentials.
+3. Capture outgoing CLI, Codex local-project files and Claude Desktop state for rollback and save
+   updated outgoing credentials. Plan Codex local-project recovery from saved-account profiles.
 4. **Writing**: `native/transaction.rs` writes CLI credentials (and paired Claude Desktop cookies /
-   config), reads back and verifies identity, and updates the native fingerprint. On failure, both
-   CLI and Desktop stores roll back; failed restoration returns `RollbackFailed` and leaves clients
-   closed.
+   config), reads back and verifies identity, applies the Codex project plan and updates the native
+   fingerprint. On failure, credentials and project files roll back; failed restoration returns
+   `RollbackFailed` and leaves clients closed. `native/codex_projects.rs` owns allowlisted local
+   project merging and raw-file rollback; no chat databases or project directories are rewritten.
 5. **Launching**: reopen the installed desktop app.
+
+Confirmed Codex restarts run the same local-project recovery before launch, without rewriting
+credentials. No recovery writes happen during startup, refresh or read-only installed-client probes.
 
 ### App updates
 

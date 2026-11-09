@@ -1,5 +1,5 @@
 //! Opt-in read-only probes. Never refresh tokens, launch/stop clients or write credentials.
-use super::{api, desktop, live};
+use super::{api, codex_projects, desktop, live, storage};
 use crate::provider::Provider;
 
 #[tokio::test]
@@ -57,4 +57,44 @@ async fn current_claude_desktop_binding() {
     );
     session.verify(&http, &subject, &org).await.unwrap();
     println!("Claude Desktop and CLI identity match; session verified (read-only)");
+}
+
+#[test]
+#[ignore = "plans Codex local-project recovery in memory; never writes files or changes processes"]
+fn current_codex_local_projects() {
+    let location = live::locate(Provider::Codex).unwrap();
+    let credential = location.read().unwrap().expect("Codex CLI login required");
+    let (user, account, _, _) =
+        api::identity(Provider::Codex, &credential, &serde_json::Value::Null).unwrap();
+    let id = format!("codex:{user}:{account}");
+    #[cfg(target_os = "macos")]
+    let data = std::env::home_dir()
+        .unwrap()
+        .join("Library/Application Support");
+    #[cfg(windows)]
+    let data = std::path::PathBuf::from(std::env::var_os("APPDATA").unwrap());
+    #[cfg(not(any(target_os = "macos", windows)))]
+    let data = std::env::home_dir().unwrap().join(".local/share");
+    let registry = storage::read_json(&data.join("io.github.shengyy.orbitswitch/accounts.json"))
+        .unwrap()
+        .expect("OrbitSwitch saved accounts required");
+    let ids: Vec<_> = registry["accounts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|account| account["provider"] == "codex")
+        .filter_map(|account| account["id"].as_str().map(str::to_owned))
+        .collect();
+    if let Some(plan) = codex_projects::prepare(&location.root, &id, &ids).unwrap() {
+        let [
+            (projects_before, assignments_before),
+            (projects_after, assignments_after),
+        ] = plan.planned_counts(&id).unwrap();
+        assert!(projects_after >= projects_before && assignments_after >= assignments_before);
+        println!(
+            "Codex local recovery plan (read-only): {projects_before} -> {projects_after} projects; {assignments_before} -> {assignments_after} thread assignments"
+        );
+    } else {
+        println!("Codex local-project state needs no recovery (read-only)");
+    }
 }

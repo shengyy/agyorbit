@@ -13,11 +13,17 @@ OrbitSwitch manages the user's own subscription sign-ins. Implementation details
 | In-progress storage transfer (account IDs and credential hashes, never credentials) | Temporary `accounts-migration.json` in the app data directory; removed after completion |
 | Quota results and short-lived access tokens | Memory |
 | Official clients' credentials | Native files and keychains; rewritten only on a confirmed switch |
+| Codex local project metadata and chat memberships | Allowlisted fields in `~/.codex/.codex-global-state.json` and its `.bak`; combined only for saved accounts after confirmed switch/restart stops the client writers; originals retained in their source profiles |
 | Isolated browser login state | Temporary CLI directory and keychain namespace; removed on completion, cancellation or timeout |
 | Logs | App log directory; never contains tokens, cookies or account emails |
 
 Claude Desktop snapshots store only `claude.ai` authentication cookies and auth keys from
 `config.json`, never chat history or the full Electron profile.
+
+Codex project recovery stays in Rust and in the native desktop state file; OrbitSwitch does not
+store a separate project registry or copy chat content, authentication atoms, ChatGPT-backed projects
+or remote-host memberships. Its history databases and project directories are not rewritten. Failed
+project-file writes/readback restore the original bytes, including the prior `.bak`.
 
 The app identifier is `io.github.shengyy.orbitswitch`:
 - macOS data: `~/Library/Application Support/io.github.shengyy.orbitswitch/`

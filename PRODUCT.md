@@ -33,6 +33,11 @@ OrbitSwitch validates the target authorization first, saves the outgoing sign-in
 back the new credentials, then reopens the installed desktop app. CLI sessions are reopened by the
 user.
 
+Codex's native local projects and chat memberships are combined across the user's saved accounts,
+matching projects by their primary directory and retaining the destination's settings and explicit
+memberships. **Restart** also recovers local projects hidden by a previous account switch. This
+does not transfer ChatGPT-backed projects, remote memberships or account-specific desktop settings.
+
 If writing or verifying fails, the original sign-in is restored. A failed rollback is reported
 distinctly and leaves native clients closed. A launch failure after a verified write reports that
 the account changed and the app must be opened manually. Operations and refreshes share a lock so

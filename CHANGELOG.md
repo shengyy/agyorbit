@@ -6,6 +6,15 @@ All notable changes to OrbitSwitch are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep Codex's native local projects and their chat memberships available when switching saved
+  accounts. Match duplicate projects by their primary directory, retain destination settings and
+  memberships, and restore credential and project files together if writing or readback fails.
+- Codex **Restart** also recovers local projects hidden in another saved account's desktop state.
+  Existing source profiles, chat databases and project files are retained; ChatGPT-backed projects,
+  remote memberships and account-specific desktop settings are not shared.
+
 ### Added
 
 - Copy the original Gemini sign-in link from the waiting sheet to continue in a private window or
