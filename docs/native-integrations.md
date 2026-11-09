@@ -34,6 +34,24 @@ Claude Code 2.1.310 and Claude Desktop 3.6556.2 (`com.anthropic.claudefordesktop
   with `remaining = 1 - used_percent / 100`. Weekly-only responses render only a weekly meter.
 - **Token renewal**: inactive accounts refresh via `POST https://auth.openai.com/oauth/token` with
   public client `app_EMoamEEZ73f0CkXaXp7hrann`.
+- **Local project state** (read-only inspected on desktop 26.1103.41825):
+  `~/.codex/.codex-global-state.json` uses `electron-account-renderer-state-v1` to retain inactive
+  `{atoms, globals}` profiles. The owner is SHA-256 of the JSON array `[userId, accountId]`.
+  Switching owners restores that account's globals, including its `local-projects` and
+  `thread-project-assignments`; a fresh account starts with no local projects.
+- **Local project preservation**: after client writers stop, `native/codex_projects.rs` combines
+  native local projects from the current and saved-account profiles into the destination. Projects
+  with the same primary directory use the destination's ID, metadata and explicit memberships;
+  primary directories remain distinct even when additional roots overlap. Only local memberships,
+  project order, project chat order and local app-server project mappings accompany the projects.
+  Codex's migration flags queue copied memberships for its own app-server API; OrbitSwitch does not
+  write history databases or creator identities. Source profiles remain intact. Cloud-backed projects,
+  account atoms and remote memberships are excluded. Both the state file and `.bak` are atomically
+  replaced and read back within the credential rollback transaction. Unsupported data and linked
+  files fail closed. **Restart** applies the same recovery without rewriting credentials.
+  Recovery writes and project-list visibility after an authorized client restart were verified on
+  macOS with desktop 26.1103.41825, with unchanged credential-file bytes. Account-to-account switching
+  and the OrbitSwitch **Restart** button remain **not verified**.
 
 ## Claude Code
 

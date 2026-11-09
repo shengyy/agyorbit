@@ -38,6 +38,14 @@ Update this page in the same PR whenever verification scope changes.
     matched the CLI account and active organization.
   - End-to-end Codex/Claude account switching, process shutdown/relaunch, token renewal and isolated
     browser enrollment remain **not verified**.
+- **Codex local-project recovery** (desktop 26.1103.41825, macOS 27.0.1):
+  - Read-only inspection verified account-scoped local-project and chat-membership storage in the
+    installed desktop. The recovery planner successfully combined saved-account projects and
+    memberships in memory without writing native state or credentials or stopping processes.
+  - An authorized client stop/relaunch using the native Rust recovery path restored local projects
+    and chat memberships. Native-state readback and the desktop's project-list API confirmed the
+    recovered projects; credential-file bytes were unchanged.
+  - Account-to-account switching and the OrbitSwitch **Restart** button remain **not verified**.
 
 ## Synthetic and loopback verification
 
@@ -51,6 +59,11 @@ Update this page in the same PR whenever verification scope changes.
   settings and cookies, aborting on cookie-schema drift before deletion, distinct rollback-failure
   reporting, missing quota vs. zero, scoped limit deduplication, Codex weekly-only and dual-window
   responses, and comparable-window recommendations.
+- **Codex local projects**: primary-directory matching, retaining destination project IDs/settings
+  and explicit memberships, distinct projects with overlapping secondary roots, saved-account scope,
+  cloud/remote exclusion, A → B → A with new chats, idempotent repair, unsupported-state rejection,
+  atomic state/backup readback, concurrent-writer rejection and raw-file rollback after project or
+  later credential-transaction failures.
 - **UI and website**: macOS Liquid Glass corner clipping and resize alignment; English and Simplified
   Chinese layouts in light and dark appearances across all three tabs, confirmation/binding/update
   sheets, and the interactive website demo.

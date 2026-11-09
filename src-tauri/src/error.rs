@@ -16,7 +16,9 @@ pub enum Error {
     DesktopSignInRequired,
     #[error("the active client's token expired; open the client to renew its sign-in")]
     LiveTokenExpired,
-    #[error("credential rollback failed; reopen the client and sign in again")]
+    #[error(
+        "could not fully restore the original client state; keep the client closed and inspect the logs"
+    )]
     RollbackFailed,
     #[error("Antigravity is not installed or could not be located")]
     AntigravityNotFound,
