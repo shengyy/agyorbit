@@ -34,7 +34,7 @@ Claude Code 2.1.310 and Claude Desktop 3.6556.2 (`com.anthropic.claudefordesktop
   with `remaining = 1 - used_percent / 100`. Weekly-only responses render only a weekly meter.
 - **Token renewal**: inactive accounts refresh via `POST https://auth.openai.com/oauth/token` with
   public client `app_EMoamEEZ73f0CkXaXp7hrann`.
-- **Local project state** (read-only inspected on desktop 26.1103.41825):
+- **Local project state** (read-only inspected on desktop 26.1103.41825 and 26.1103.60933):
   `~/.codex/.codex-global-state.json` uses `electron-account-renderer-state-v1` to retain inactive
   `{atoms, globals}` profiles. The owner is SHA-256 of the JSON array `[userId, accountId]`.
   Switching owners restores that account's globals, including its `local-projects` and
@@ -46,12 +46,22 @@ Claude Code 2.1.310 and Claude Desktop 3.6556.2 (`com.anthropic.claudefordesktop
   project order, project chat order and local app-server project mappings accompany the projects.
   Codex's migration flags queue copied memberships for its own app-server API; OrbitSwitch does not
   write history databases or creator identities. Source profiles remain intact. Cloud-backed projects,
-  account atoms and remote memberships are excluded. Both the state file and `.bak` are atomically
+  authentication atoms and remote memberships are excluded. Both the state file and `.bak` are atomically
   replaced and read back within the credential rollback transaction. Unsupported data and linked
   files fail closed. **Restart** applies the same recovery without rewriting credentials.
   Recovery writes and project-list visibility after an authorized client restart were verified on
   macOS with desktop 26.1103.41825, with unchanged credential-file bytes. Account-to-account switching
   and the OrbitSwitch **Restart** button remain **not verified**.
+- **Local sidebar presentation** (installed desktop 26.1103.60933, macOS 26.3.1, read-only source
+  inspection): local projects can remain hidden when `sidebar-collapsed-sections-v1.threads` is true
+  or `sidebar-project-list-expanded-v1` is absent/false; the latter defaults to false.
+  `native/codex_sidebar.rs` carries the outgoing local order from `unified-sidebar-project-order-v1`,
+  per-project `sidebar-project-expanded-v1-codex:<id>` choices and local view/sort preferences through
+  the project-ID mapping. Destination cloud/custom order entries and private atoms stay intact.
+  Every confirmed switch or **Restart** sets the project section to expanded and the full list to
+  visible, even when project data was previously migrated. A registered inactive profile can restore
+  a shortened local order. These repairs are covered by synthetic tests; actual sidebar visibility
+  after applying this change and account-to-account switching remain **not verified**.
 
 ## Claude Code
 

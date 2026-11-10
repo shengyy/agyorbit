@@ -22,7 +22,8 @@ Claude Desktop snapshots store only `claude.ai` authentication cookies and auth 
 
 Codex project recovery stays in Rust and in the native desktop state file; OrbitSwitch does not
 store a separate project registry or copy chat content, authentication atoms, ChatGPT-backed projects
-or remote-host memberships. Its history databases and project directories are not rewritten. Failed
+or remote-host memberships. Only allowlisted local project order, view/sort mode and expansion atoms
+accompany project recovery. Its history databases and project directories are not rewritten. Failed
 project-file writes/readback restore the original bytes, including the prior `.bak`.
 
 The app identifier is `io.github.shengyy.orbitswitch`:

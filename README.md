@@ -43,10 +43,13 @@ Windows builds are unsigned; SmartScreen may require **More info → Run anyway*
 4. Pick another account, review the affected processes, and confirm the switch.
 
 Codex keeps native local projects and their chat memberships across saved accounts. If a previous
-switch hid them, choose **Restart** in the ChatGPT tab to recover them. Destination settings and
-memberships take precedence; cloud-backed projects and remote memberships remain separate.
+switch hid them, choose **Restart** in the ChatGPT tab to recover them. Local project order and
+individual expansion choices follow the outgoing workspace; every switch or **Restart** expands
+the project section and full list. Destination project metadata and memberships take precedence;
+cloud-backed projects and remote memberships remain separate.
 Local-project recovery after an authorized Codex restart is verified on macOS. Account-to-account
-switching remains **not verified**; see [docs/status.md](docs/status.md).
+switching and the sidebar expansion repair remain **not verified** end to end; see
+[docs/status.md](docs/status.md).
 
 The app menu offers Open at Login, logs, update checks and Quit. Updates restart OrbitSwitch only.
 

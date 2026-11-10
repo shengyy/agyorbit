@@ -36,7 +36,7 @@ fn state() -> Value {
 }
 
 fn run(state: Value, target: &str) -> Result<Value> {
-    merged(state, target, &[A.into(), B.into()], HOST)
+    merged(state, target, &[A.into(), B.into()], HOST, None)
 }
 
 fn target(state: &Value, id: &str) -> Value {
@@ -56,7 +56,7 @@ fn merges_registered_local_projects_without_copying_account_atoms() {
     assert_eq!(object(&destination[PROJECTS]).unwrap().len(), 2);
     assert_eq!(
         destination["project-order"],
-        json!(["project-b", "project-a"])
+        json!(["project-a", "project-b"])
     );
     assert_eq!(
         destination[ASSIGNMENTS]["thread-a"]["projectId"],
@@ -67,8 +67,8 @@ fn merges_registered_local_projects_without_copying_account_atoms() {
         "server-project-a"
     );
     assert_eq!(
-        after[ACCOUNTS]["inactive"][owner(B).unwrap()]["atoms"],
-        before[ACCOUNTS]["inactive"][owner(B).unwrap()]["atoms"]
+        after[ACCOUNTS]["inactive"][owner(B).unwrap()]["atoms"]["cloud-session"],
+        before[ACCOUNTS]["inactive"][owner(B).unwrap()]["atoms"]["cloud-session"]
     );
     assert_eq!(after[ACCOUNTS]["owner"], before[ACCOUNTS]["owner"]);
     assert_eq!(
@@ -94,8 +94,8 @@ fn repairs_active_profile_from_registered_inactive_projects() {
     assert_eq!(after[ASSIGNMENTS]["thread-b"]["projectId"], "project-b");
     assert_eq!(after[ACCOUNTS], before[ACCOUNTS]);
     assert_eq!(
-        after["electron-persisted-atom-state"],
-        before["electron-persisted-atom-state"]
+        after[ATOMS]["cloud-session"],
+        before[ATOMS]["cloud-session"]
     );
     assert!(after[PROJECTS].get("project-c").is_none());
 }
@@ -104,13 +104,178 @@ fn repairs_active_profile_from_registered_inactive_projects() {
 fn new_account_gets_local_projects_and_empty_private_atoms() {
     let after = run(state(), "codex:new:workspace").unwrap();
     let key = owner("codex:new:workspace").unwrap();
-    assert_eq!(after[ACCOUNTS]["inactive"][&key]["atoms"], json!({}));
+    assert!(
+        after[ACCOUNTS]["inactive"][&key]["atoms"]
+            .get("cloud-session")
+            .is_none()
+    );
+    assert_eq!(
+        after[ACCOUNTS]["inactive"][&key]["atoms"]["sidebar-project-list-expanded-v1"],
+        true
+    );
     assert_eq!(
         object(&after[ACCOUNTS]["inactive"][key]["globals"][PROJECTS])
             .unwrap()
             .len(),
         2
     );
+}
+
+#[test]
+fn outgoing_sidebar_order_and_project_expansion_follow_directory_aliases() {
+    let mut before = state();
+    before[PROJECTS]["project-extra"] = project("project-extra", &["/fixtures/extra"]);
+    before[PROJECTS]["g-p-private"] = project("g-p-private", &["/fixtures/cloud"]);
+    before[ATOMS] = json!({
+        "cloud-session":"a-only",
+        "unified-sidebar-project-order-v1":["codex:project:project-extra","codex:project:g-p-private","codex:project:project-a"],
+        "sidebar-project-expanded-v1-codex:project-a":false,
+        "sidebar-project-expanded-v1-codex:project-extra":true,
+        "sidebar-project-expanded-v1-codex:g-p-private":true,
+        "flat-project-sidebar-preferences-v1":{"mode":"project","projectSortMode":"manual","initialized":true,"chatSortMode":"source-only"}
+    });
+    let b = owner(B).unwrap();
+    before[ACCOUNTS]["inactive"][&b]["globals"][PROJECTS]["project-b"]["rootPaths"] =
+        json!(["/fixtures/client"]);
+    before[ACCOUNTS]["inactive"][&b]["atoms"] = json!({
+        "cloud-session":"b-only",
+        "unified-sidebar-project-order-v1":["cloud:private","codex:project:project-b","section:private"],
+        "sidebar-project-expanded-v1-codex:project-b":true,
+        "sidebar-collapsed-sections-v1":{"threads":true,"cloud":true,"pinned":false},
+        "sidebar-project-list-expanded-v1":false,
+        "flat-project-sidebar-preferences-v1":{"mode":"list","projectSortMode":"updated_at","chatSortMode":"destination-only"}
+    });
+    let after = run(before, B).unwrap();
+    let atoms = &after[ACCOUNTS]["inactive"][&b]["atoms"];
+    assert_eq!(
+        atoms["unified-sidebar-project-order-v1"],
+        json!([
+            "cloud:private",
+            "codex:project:project-extra",
+            "section:private",
+            "codex:project:project-b"
+        ])
+    );
+    assert_eq!(
+        target(&after, B)["project-order"],
+        json!(["project-extra", "project-b"])
+    );
+    assert_eq!(atoms["sidebar-project-expanded-v1-codex:project-b"], false);
+    assert_eq!(
+        atoms["sidebar-project-expanded-v1-codex:project-extra"],
+        true
+    );
+    assert!(
+        atoms
+            .get("sidebar-project-expanded-v1-codex:g-p-private")
+            .is_none()
+    );
+    assert_eq!(
+        atoms["sidebar-collapsed-sections-v1"],
+        json!({"threads":false,"cloud":true,"pinned":false})
+    );
+    assert_eq!(atoms["sidebar-project-list-expanded-v1"], true);
+    assert_eq!(
+        atoms["flat-project-sidebar-preferences-v1"]["mode"],
+        "project"
+    );
+    assert_eq!(
+        atoms["flat-project-sidebar-preferences-v1"]["chatSortMode"],
+        "destination-only"
+    );
+    assert_eq!(atoms["cloud-session"], "b-only");
+}
+
+#[test]
+fn every_switch_and_restart_reopens_the_local_project_section_and_full_list() {
+    let mut once = activate(run(state(), B).unwrap(), B);
+    once[ATOMS]["sidebar-collapsed-sections-v1"] = json!({"threads":true,"cloud":true});
+    once[ATOMS]["sidebar-project-list-expanded-v1"] = false.into();
+    once[ATOMS]["sidebar-project-expanded-v1-codex:project-a"] = false.into();
+    let repaired = run(once, B).unwrap();
+    assert_eq!(
+        repaired[ATOMS]["sidebar-collapsed-sections-v1"]["threads"],
+        false
+    );
+    assert_eq!(repaired[ATOMS]["sidebar-project-list-expanded-v1"], true);
+    assert_eq!(
+        repaired[ATOMS]["sidebar-project-expanded-v1-codex:project-a"],
+        false
+    );
+    let mut next = repaired;
+    next[ACCOUNTS]["inactive"][owner(A).unwrap()]["atoms"]["sidebar-collapsed-sections-v1"] =
+        json!({"threads":true});
+    next[ACCOUNTS]["inactive"][owner(A).unwrap()]["atoms"]["sidebar-project-list-expanded-v1"] =
+        false.into();
+    let switched = activate(run(next, A).unwrap(), A);
+    assert_eq!(
+        switched[ATOMS]["sidebar-collapsed-sections-v1"]["threads"],
+        false
+    );
+    assert_eq!(switched[ATOMS]["sidebar-project-list-expanded-v1"], true);
+}
+
+#[test]
+fn repairs_already_migrated_but_hidden_sidebar_without_restarting_migrations() {
+    let mut once = activate(run(state(), B).unwrap(), B);
+    once[MIGRATIONS][HOST] = json!({"version":1,"projectsMigrated":true,"threadAssignmentsMigrated":true,"threadAssignmentsReadMigrated":true,"pendingThreadAssignmentIds":[]});
+    once[ATOMS]["unified-sidebar-project-order-v1"] = json!(["codex:project:project-b"]);
+    once[ACCOUNTS]["inactive"][owner(A).unwrap()]["globals"] = target(&once, B);
+    once[ACCOUNTS]["inactive"][owner(A).unwrap()]["atoms"]["unified-sidebar-project-order-v1"] =
+        json!(["codex:project:project-a", "codex:project:project-b"]);
+    let migration = once[MIGRATIONS].clone();
+    let repaired = run(once, B).unwrap();
+    assert_eq!(
+        repaired[ATOMS]["unified-sidebar-project-order-v1"],
+        json!(["codex:project:project-a", "codex:project:project-b"])
+    );
+    assert_eq!(repaired[MIGRATIONS], migration);
+}
+
+#[test]
+fn explicit_outgoing_profile_wins_over_older_profiles_even_after_signed_out_startup() {
+    let mut before = state();
+    before[ATOMS]["unified-sidebar-project-order-v1"] = json!(["codex:project:project-a"]);
+    before[ATOMS]["sidebar-organize-mode-v1"] = "project".into();
+    before[ACCOUNTS]["inactive"][owner(A).unwrap()] =
+        json!({"atoms":before[ATOMS],"globals":before});
+    before[ACCOUNTS]["owner"] = Value::Null;
+    before[ACCOUNTS]["inactive"][owner(C).unwrap()]["atoms"] = json!({
+        "unified-sidebar-project-order-v1":["codex:project:project-c","codex:project:project-a"],
+        "sidebar-organize-mode-v1":"list"
+    });
+    before[ACCOUNTS]["inactive"][owner(C).unwrap()]["globals"][PROJECTS]["project-a"] =
+        project("project-a", &["/fixtures/client"]);
+    let after = merged(before, B, &[A.into(), B.into(), C.into()], HOST, Some(A)).unwrap();
+    let atoms = &after[ACCOUNTS]["inactive"][owner(B).unwrap()]["atoms"];
+    let order = strings(atoms.get("unified-sidebar-project-order-v1")).unwrap();
+    assert_eq!(order.first().unwrap(), "codex:project:project-a");
+    assert_eq!(order.len(), 3);
+    assert_eq!(atoms["sidebar-organize-mode-v1"], "project");
+}
+
+#[test]
+fn no_local_projects_leave_sidebar_atoms_unchanged() {
+    let before = json!({ATOMS:{"sidebar-project-list-expanded-v1":false},ACCOUNTS:{"owner":owner(A).unwrap(),"inactive":{}}});
+    assert_eq!(run(before.clone(), A).unwrap(), before);
+}
+
+#[test]
+fn unsupported_sidebar_shapes_are_rejected_before_native_writes() {
+    for (key, value) in [
+        ("unified-sidebar-project-order-v1", json!([42])),
+        ("sidebar-project-expanded-v1-codex:project-a", json!("yes")),
+        ("flat-project-sidebar-preferences-v1", json!({"mode":42})),
+        ("sidebar-organize-mode-v1", json!(true)),
+    ] {
+        let mut before = state();
+        before[ATOMS][key] = value;
+        assert!(run(before, B).is_err(), "{key}");
+    }
+    let mut before = state();
+    before[ACCOUNTS]["inactive"][owner(B).unwrap()]["atoms"]["sidebar-collapsed-sections-v1"] =
+        json!([]);
+    assert!(run(before, B).is_err());
 }
 
 #[test]
@@ -351,7 +516,7 @@ fn prepared(backup: bool) -> (tempfile::TempDir, Update) {
         )
         .unwrap()
     }
-    let update = prepare(dir.path(), B, &[A.into(), B.into()])
+    let update = prepare(dir.path(), B, &[A.into(), B.into()], Some(A))
         .unwrap()
         .unwrap();
     (dir, update)
@@ -460,9 +625,13 @@ fn concurrent_writer_is_not_overwritten_or_rolled_back() {
 #[test]
 fn absent_state_is_noop_and_malformed_state_is_retained() {
     let dir = tempfile::tempdir().unwrap();
-    assert!(prepare(dir.path(), B, &[A.into()]).unwrap().is_none());
+    assert!(
+        prepare(dir.path(), B, &[A.into()], Some(A))
+            .unwrap()
+            .is_none()
+    );
     fs::write(dir.path().join(STATE), b"broken").unwrap();
-    assert!(prepare(dir.path(), B, &[A.into()]).is_err());
+    assert!(prepare(dir.path(), B, &[A.into()], Some(A)).is_err());
     assert_eq!(fs::read(dir.path().join(STATE)).unwrap(), b"broken");
 }
 
@@ -473,7 +642,7 @@ fn linked_state_or_backup_is_rejected_without_touching_the_destination() {
     let outside = dir.path().join("outside");
     fs::write(&outside, b"keep").unwrap();
     std::os::unix::fs::symlink(&outside, dir.path().join(format!("{STATE}.bak"))).unwrap();
-    assert!(prepare(dir.path(), B, &[A.into()]).is_err());
+    assert!(prepare(dir.path(), B, &[A.into()], Some(A)).is_err());
     assert!(update.apply().is_err());
     assert_eq!(fs::read(&outside).unwrap(), b"keep");
 }

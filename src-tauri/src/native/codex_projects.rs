@@ -1,5 +1,5 @@
 //! Carry native local projects between saved Codex accounts after all writers stop.
-//! Account-specific atoms, cloud projects and remote memberships stay with their owner.
+//! Local sidebar state follows the workspace; authentication atoms stay with their owner.
 use super::storage;
 use crate::error::{Error, Result};
 use serde_json::{Map, Value, json};
@@ -13,6 +13,10 @@ const ASSIGNMENTS: &str = "thread-project-assignments";
 const HOSTS: &str = "thread-project-membership-host-ids";
 const SERVER_IDS: &str = "app-server-project-id-by-legacy-project-id-by-host";
 const MIGRATIONS: &str = "app-server-projects-migration-by-host";
+const ATOMS: &str = "electron-persisted-atom-state";
+
+#[path = "codex_sidebar.rs"]
+mod sidebar;
 
 type Object = Map<String, Value>;
 
@@ -92,7 +96,7 @@ fn local_root(id: &str, value: &Value) -> Result<Option<String>> {
     Ok(Some(root.trim_end_matches(['/', '\\']).to_owned()))
 }
 
-fn merge_local(target: &mut Object, source: &Object, host: &str) -> Result<()> {
+fn merge_local(target: &mut Object, source: &Object, host: &str) -> Result<Object> {
     let before = target.clone();
     let mut projects = map_at(target, PROJECTS)?.cloned().unwrap_or_default();
     let source_projects = map_at(source, PROJECTS)?.cloned().unwrap_or_default();
@@ -123,7 +127,7 @@ fn merge_local(target: &mut Object, source: &Object, host: &str) -> Result<()> {
         aliases.insert(id.clone(), destination.into());
     }
     if aliases.is_empty() {
-        return Ok(());
+        return Ok(aliases);
     }
     let mut order = strings(target.get("project-order"))?;
     let source_order = strings(source.get("project-order"))?;
@@ -233,7 +237,7 @@ fn merge_local(target: &mut Object, source: &Object, host: &str) -> Result<()> {
     mappings.insert(host.into(), local.into());
     target.insert(SERVER_IDS.into(), mappings.into());
     if *target == before {
-        return Ok(());
+        return Ok(aliases);
     }
     // Let Codex migrate the copied associations through its own app-server API.
     // Never rewrite its history databases or creator-account fields.
@@ -258,10 +262,16 @@ fn merge_local(target: &mut Object, source: &Object, host: &str) -> Result<()> {
     ]);
     migrations.insert(host.into(), migration.into());
     target.insert(MIGRATIONS.into(), migrations.into());
-    Ok(())
+    Ok(aliases)
 }
 
-fn merged(mut state: Value, target_id: &str, ids: &[String], host: &str) -> Result<Value> {
+fn merged(
+    mut state: Value,
+    target_id: &str,
+    ids: &[String],
+    host: &str,
+    outgoing_id: Option<&str>,
+) -> Result<Value> {
     let target_owner = owner(target_id).ok_or_else(invalid)?;
     let allowed: BTreeSet<_> = ids
         .iter()
@@ -278,6 +288,9 @@ fn merged(mut state: Value, target_id: &str, ids: &[String], host: &str) -> Resu
     }
     let inactive = map_at(accounts, "inactive")?.ok_or_else(invalid)?;
     let active_target = current.as_str() == Some(&target_owner);
+    let outgoing_owner = outgoing_id
+        .and_then(owner)
+        .or_else(|| current.as_str().map(str::to_owned));
     let mut target = if active_target {
         root.clone()
     } else {
@@ -289,28 +302,65 @@ fn merged(mut state: Value, target_id: &str, ids: &[String], host: &str) -> Resu
             .transpose()?
             .unwrap_or_default()
     };
+    let mut target_atoms = if active_target {
+        map_at(root, ATOMS)?.cloned().unwrap_or_default()
+    } else {
+        inactive
+            .get(&target_owner)
+            .map(object)
+            .transpose()?
+            .map(|profile| map_at(profile, "atoms")?.cloned().ok_or_else(invalid))
+            .transpose()?
+            .unwrap_or_default()
+    };
     let before = target.clone();
+    let atoms_before = target_atoms.clone();
+    let empty_atoms = Object::new();
+    let mut sidebar_sources = Vec::new();
     // Prefer the currently visible workspace over older inactive copies.
     if current.as_str().is_some_and(|key| allowed.contains(key)) && !active_target {
-        merge_local(&mut target, root, host)?;
+        let aliases = merge_local(&mut target, root, host)?;
+        sidebar_sources.push((
+            root,
+            map_at(root, ATOMS)?.unwrap_or(&empty_atoms),
+            aliases,
+            current.as_str() == outgoing_owner.as_deref(),
+        ));
     }
     for (key, profile) in inactive {
         if key != &target_owner && allowed.contains(key) {
             let profile = object(profile)?;
-            object(profile.get("atoms").ok_or_else(invalid)?)?;
-            merge_local(
-                &mut target,
-                map_at(profile, "globals")?.ok_or_else(invalid)?,
-                host,
-            )?;
+            let source_atoms = object(profile.get("atoms").ok_or_else(invalid)?)?;
+            let source_globals = map_at(profile, "globals")?.ok_or_else(invalid)?;
+            let aliases = merge_local(&mut target, source_globals, host)?;
+            sidebar_sources.push((
+                source_globals,
+                source_atoms,
+                aliases,
+                outgoing_owner.as_ref() == Some(key),
+            ));
         }
     }
-    if target == before {
+    // Apply the actual outgoing workspace last, after recovering any older missing projects.
+    sidebar_sources.sort_by_key(|(_, _, _, preferred)| *preferred);
+    for (globals, atoms, aliases, preferred) in sidebar_sources {
+        sidebar::merge(
+            &mut target,
+            &mut target_atoms,
+            globals,
+            atoms,
+            &aliases,
+            preferred,
+        )?;
+    }
+    sidebar::reveal(&target, &mut target_atoms)?;
+    if target == before && target_atoms == atoms_before {
         return Ok(state);
     }
     let root = state.as_object_mut().ok_or_else(invalid)?;
     if active_target {
-        // Only allowlisted fields changed; account ownership and every atom remain untouched.
+        // Only local workspace fields change; account ownership and private atoms stay intact.
+        target.insert(ATOMS.into(), target_atoms.into());
         *root = target;
     } else {
         let inactive = root
@@ -325,6 +375,7 @@ fn merged(mut state: Value, target_id: &str, ids: &[String], host: &str) -> Resu
         let profile = profile.as_object_mut().ok_or_else(invalid)?;
         object(profile.get("atoms").ok_or_else(invalid)?)?;
         profile.insert("globals".into(), target.into());
+        profile.insert("atoms".into(), target_atoms.into());
     }
     Ok(state)
 }
@@ -346,7 +397,12 @@ pub(super) struct Update {
     dirty: [Cell<bool>; 2],
 }
 
-pub(super) fn prepare(root: &Path, target_id: &str, ids: &[String]) -> Result<Option<Update>> {
+pub(super) fn prepare(
+    root: &Path,
+    target_id: &str,
+    ids: &[String],
+    outgoing_id: Option<&str>,
+) -> Result<Option<Update>> {
     let path = root.join(STATE);
     let Some(original) = read(&path)? else {
         return Ok(None);
@@ -354,7 +410,7 @@ pub(super) fn prepare(root: &Path, target_id: &str, ids: &[String]) -> Result<Op
     let state: Value = serde_json::from_slice(&original)?;
     // Codex's host identity uses its configured home, not Rust's Windows extended path prefix.
     let host = format!("local:{}", root.to_string_lossy());
-    let updated = merged(state.clone(), target_id, ids, &host)?;
+    let updated = merged(state.clone(), target_id, ids, &host, outgoing_id)?;
     if updated == state {
         return Ok(None);
     }

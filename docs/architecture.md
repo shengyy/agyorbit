@@ -104,7 +104,9 @@ failure. A default-browser launch failure keeps the copy action available.
    config), reads back and verifies identity, applies the Codex project plan and updates the native
    fingerprint. On failure, credentials and project files roll back; failed restoration returns
    `RollbackFailed` and leaves clients closed. `native/codex_projects.rs` owns allowlisted local
-   project merging and raw-file rollback; no chat databases or project directories are rewritten.
+   project merging and raw-file rollback; `native/codex_sidebar.rs` carries allowlisted local layout
+   through the same project-ID mapping and reveals the project section and full list on every
+   switch/restart. No chat databases or project directories are rewritten.
 5. **Launching**: reopen the installed desktop app.
 
 Confirmed Codex restarts run the same local-project recovery before launch, without rewriting
