@@ -66,7 +66,7 @@ fn prepare_projects(
         .map(|account| account.id.clone())
         .collect();
     ids.extend(current_id.map(str::to_owned));
-    codex_projects::prepare(&location.root, target_id, &ids)
+    codex_projects::prepare(&location.root, target_id, &ids, current_id)
 }
 fn fingerprint(value: &Value) -> String {
     registry::fingerprint(&value.to_string())

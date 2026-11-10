@@ -6,6 +6,13 @@ All notable changes to OrbitSwitch are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep Codex's local project order and each project's expansion state when switching accounts,
+  including projects matched to an existing destination ID. Every confirmed switch or **Restart**
+  expands the local project section and shows the full project list, repairing accounts whose
+  projects were already recovered but remained hidden in the sidebar.
+
 ## [0.2.3] - 2026-11-09
 
 ### Fixed

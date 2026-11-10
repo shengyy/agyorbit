@@ -85,7 +85,7 @@ fn current_codex_local_projects() {
         .filter(|account| account["provider"] == "codex")
         .filter_map(|account| account["id"].as_str().map(str::to_owned))
         .collect();
-    if let Some(plan) = codex_projects::prepare(&location.root, &id, &ids).unwrap() {
+    if let Some(plan) = codex_projects::prepare(&location.root, &id, &ids, Some(&id)).unwrap() {
         let [
             (projects_before, assignments_before),
             (projects_after, assignments_after),

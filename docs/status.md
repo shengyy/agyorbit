@@ -46,6 +46,11 @@ Update this page in the same PR whenever verification scope changes.
     and chat memberships. Native-state readback and the desktop's project-list API confirmed the
     recovered projects; credential-file bytes were unchanged.
   - Account-to-account switching and the OrbitSwitch **Restart** button remain **not verified**.
+- **Codex sidebar contract** (desktop 26.1103.60933, macOS 26.3.1):
+  - Read-only native-state and installed-source inspection confirmed that account-specific collapse,
+    full-list visibility and project-order atoms can hide projects whose data is already present.
+  - The new forced expansion and workspace-layout preservation remain **not verified** end to end
+    on a running desktop; their storage contract and synthetic verification are described below.
 
 ## Synthetic and loopback verification
 
@@ -64,6 +69,10 @@ Update this page in the same PR whenever verification scope changes.
   cloud/remote exclusion, A → B → A with new chats, idempotent repair, unsupported-state rejection,
   atomic state/backup readback, concurrent-writer rejection and raw-file rollback after project or
   later credential-transaction failures.
+- **Codex local sidebar**: outgoing local order and per-project expansion through primary-directory
+  aliases, preserving destination private/cloud state, forced project-section/full-list expansion
+  on every switch/restart, repairing an already migrated but shortened sidebar, explicit outgoing
+  ownership during signed-out startup, empty-project no-op and unsupported-shape rejection.
 - **UI and website**: macOS Liquid Glass corner clipping and resize alignment; English and Simplified
   Chinese layouts in light and dark appearances across all three tabs, confirmation/binding/update
   sheets, and the interactive website demo.
